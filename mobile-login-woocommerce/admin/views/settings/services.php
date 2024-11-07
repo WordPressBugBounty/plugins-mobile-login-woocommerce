@@ -7,27 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 $settings = array(
 
 	array(
-		'type' 			=> 'setting',
-		'callback' 		=> 'text',
-		'section_id' 	=> 'sv_firebase',
-		'id' 			=> 'fb-api-key',
-		'title' 		=> 'API key',
-	),
-
-
-	array(
-		'type' 			=> 'setting',
-		'callback' 		=> 'textarea',
-		'section_id' 	=> 'sv_firebase',
-		'id' 			=> 'fb-config',
-		'title' 		=> 'Config',
-		'args' 			=> array(
-			'rows' 	=> 9,
-			'cols' 	=> 60
-		)
-	),
-
-	array(
 		'callback' 		=> 'upload',
 		'title' 		=> 'PHP SDK',
 		'id' 			=> 'twilio-phpsdk',
@@ -53,6 +32,7 @@ $settings = array(
 		'title' 		=> 'Auth Token',
 	),
 
+
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'text',
@@ -60,7 +40,6 @@ $settings = array(
 		'id' 			=> 'twilio-sender-number',
 		'title' 		=> 'Sender\'s Number',
 	),
-
 
 	array(
 		'type' 			=> 'setting',
@@ -71,6 +50,27 @@ $settings = array(
 		'desc' 			=> 'If you want to send OTP via whatsapp (Only approved whatsapp template works )'
 	),
 
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_firebase',
+		'id' 			=> 'fb-api-key',
+		'title' 		=> 'API key',
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'textarea',
+		'section_id' 	=> 'sv_firebase',
+		'id' 			=> 'fb-config',
+		'title' 		=> 'Config',
+		'args' 			=> array(
+			'rows' 	=> 9,
+			'cols' 	=> 60
+		)
+	),
 
 	array(
 		'callback' 		=> 'upload',
@@ -98,6 +98,19 @@ $settings = array(
 		'title' 		=> 'Secret access key',
 	),
 
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_aws',
+		'id' 			=> 'asns-region',
+		'title' 		=> 'Region Code',
+		'default' 		=> 'us-east-1',
+		'desc' 			=> 'Eg: us-east-1'
+	),
+
+
+
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'text',
@@ -117,7 +130,7 @@ $settings = array(
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'text',
-		'section_id' 	=> 'sv_bulksms',
+		'section_id' 	=> 'sv_bulkssms',
 		'id' 			=> 'bulksms-user',
 		'title' 		=> 'User',
 	),
@@ -248,7 +261,6 @@ $settings = array(
 		'title' 		=> 'Sender ID',
 	),
 
-
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'text',
@@ -265,24 +277,15 @@ $settings = array(
 		'title' 		=> 'Sender ID',
 	),
 
-
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'text',
 		'section_id' 	=> 'sv_msg91',
 		'id' 			=> 'msg91-tmpid',
-		'title' 		=> 'DLT Template ID',
+		'title' 		=> 'DLT Template ID (India)',
+		'desc' 			=> 'For Indian users only'
 	),
 
-	array(
-		'type' 			=> 'setting',
-		'callback' 		=> 'text',
-		'section_id' 	=> 'sv_msg91',
-		'id' 			=> 'msg91-route',
-		'title' 		=> 'Route',
-		'default' 		=> 4,
-		'desc' 			=> '4 for transactional SMSs'
-	),
 
 
 	array(
@@ -310,7 +313,6 @@ $settings = array(
 		'title' 		=> 'Enable Test',
 		'default' 		=> 'no'
 	),
-
 
 	array(
 		'type' 			=> 'setting',
@@ -353,6 +355,78 @@ $settings = array(
 		'id' 			=> 'semaphore-senderid',
 		'title' 		=> 'Sender Name',
 	),
+
+
+	/* Msegat */
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_msegat',
+		'id' 			=> 'msegat-username',
+		'title' 		=> 'Username',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_msegat',
+		'id' 			=> 'msegat-apikey',
+		'title' 		=> 'API Key',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_msegat',
+		'id' 			=> 'msegat-usersender',
+		'title' 		=> 'User Sender/Sender Name',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_msegat',
+		'id' 			=> 'msegat-msgencoding',
+		'title' 		=> 'MsgEncoding',
+		'default' 		=> 'UTF8'
+	),
+
+	/* Custom */
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-url',
+		'title' 		=> 'API URL',
+		'desc' 			=> 'For eg: https://api.textlocal.in/send/'
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'textarea',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-params',
+		'title' 		=> 'API Parameters',
+		'desc' 			=> 'separated by &.<br>Shortcodes: Phone number of message recepient: [phone_number]<br>Message: [message]<br>For eg: apiKey=xxxx&senderID=yyy&numbers=[phone_number]&message=[message]<br>'
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'select',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-method',
+		'title' 		=> 'HTTP Method',
+		'args' 			=> array(
+			'options' 		=> array(
+				'GET' 		=> 'GET',
+				'POST' 		=> 'POST'
+			),
+		),
+		'default' 		=> 'POST'
+	),
+
 
 );
 

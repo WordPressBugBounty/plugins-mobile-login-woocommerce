@@ -6,7 +6,7 @@ use Aws\Credentials\Credentials;
 
 class Xoo_Ml_Service_AWS extends Xoo_Ml_Service{
 
-	public $accessKey, $secretKey, $credentials;
+	public $accessKey, $secretKey, $credentials, $region;
 
 	public function __construct(){
 
@@ -15,6 +15,7 @@ class Xoo_Ml_Service_AWS extends Xoo_Ml_Service{
 
 		$this->accessKey = xoo_ml_helper()->get_service_option('asns-access-key');
 		$this->secretKey = xoo_ml_helper()->get_service_option('asns-secret-key');
+		$this->region 	 = xoo_ml_helper()->get_service_option('asns-region');
 
 		$this->include_sdk( 'aws/aws-autoloader.php' );
 
@@ -48,7 +49,7 @@ class Xoo_Ml_Service_AWS extends Xoo_Ml_Service{
 
 		$SnSclient = new SnsClient([
 		    'credentials' 	=> $this->credentials,
-		    'region' 		=> 'us-east-1',
+		    'region' 		=> $this->region,
 		    'version' 		=> 'latest'
 		]);
 

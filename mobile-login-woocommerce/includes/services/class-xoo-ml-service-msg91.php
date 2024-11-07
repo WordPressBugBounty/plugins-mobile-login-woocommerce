@@ -28,7 +28,7 @@ class Xoo_Ml_Service_Msg91 extends Xoo_Ml_Service{
 	 		'body' => array(
 	 			'authkey' 		=> $this->authkey,
 	 			'sender' 		=> $this->senderid,
-	 			'route' 		=> $this->route,
+	 			'route' 		=> '4',
 	 			'DLT_TE_ID' 	=> $this->templateid,
 	 			'mobiles' 		=> $phone,
 	 			'message' 		=> $message,

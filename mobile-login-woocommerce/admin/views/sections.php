@@ -41,6 +41,14 @@ $sections = array(
 		'pro' 	=> 'yes'
 	),
 
+
+	array(
+		'title' => 'Login with Email OTP',
+		'id' 	=> 'ph_emlogin',
+		'tab' 	=> 'phone',
+		'pro' 	=> 'yes',
+	),
+
 	array(
 		'id' 	=> 'ph_popup',
 		'title' => 'Popup Settings',
@@ -140,6 +148,20 @@ $sections = array(
 		'id' 	=> 'sv_semaphore',
 		'tab' 	=> 'services',
 		'desc' 	=> '<a href="https://docs.xootix.com/mobile-login-for-woocommerce/semaphore/" target="_blank">Documentation</a>'
+	),
+
+	array(
+		'title' => 'Msegat',
+		'id' 	=> 'sv_msegat',
+		'tab' 	=> 'services',
+		'desc' 	=> '<a href="https://docs.xootix.com/mobile-login-for-woocommerce/msegat/" target="_blank">Documentation</a>'
+	),
+
+	array(
+		'title' => 'Custom',
+		'id' 	=> 'sv_custom',
+		'tab' 	=> 'services',
+		'desc' 	=> "If your service operator isn't listed, you can manually include it. Please refer to your operator documentation",
 	),
 
 );

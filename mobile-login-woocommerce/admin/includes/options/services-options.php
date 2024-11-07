@@ -96,6 +96,79 @@ $settings = array(
 		'title' 		=> 'Sender\'s Number',
 	),
 
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section' 		=> 'twilio-section',
+		'option_name' 	=> $option_name,
+		'id' 			=> 'twilio-wp-number',
+		'title' 		=> 'WhatsApp Number',
+		'desc' 			=> 'For sending OTP via WhatsApp'
+	),
+
+	array(
+		'type' 			=> 'section',
+		'callback' 		=> 'section',
+		'id' 			=> 'unifonic-section',
+		'title' 		=> 'Unifonic Settings',
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section' 		=> 'unifonic-section',
+		'option_name' 	=> $option_name,
+		'id' 			=> 'uni-app-id',
+		'title' 		=> 'App ID',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section' 		=> 'unifonic-section',
+		'option_name' 	=> $option_name,
+		'id' 			=> 'uni-sender-id',
+		'title' 		=> 'Sender ID',
+	),
+
+
+	array(
+		'type' 			=> 'section',
+		'callback' 		=> 'section',
+		'id' 			=> 'smsalert-section',
+		'title' 		=> 'SMS Alert Settings',
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section' 		=> 'smsalert-section',
+		'option_name' 	=> $option_name,
+		'id' 			=> 'salert-user',
+		'title' 		=> 'User',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section' 		=> 'smsalert-section',
+		'option_name' 	=> $option_name,
+		'id' 			=> 'salert-pwd',
+		'title' 		=> 'Password',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section' 		=> 'smsalert-section',
+		'option_name' 	=> $option_name,
+		'id' 			=> 'salert-sender',
+		'title' 		=> 'Sender',
+	),
+
 );
 
 return $settings;

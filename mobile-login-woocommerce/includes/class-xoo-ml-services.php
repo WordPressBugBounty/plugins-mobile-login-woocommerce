@@ -121,6 +121,18 @@ class Xoo_Ml_Services{
 				'desc' 		=> '',
 				'service' 	=> XOO_ML_PATH.'/includes/services/class-xoo-ml-service-semaphore.php',
 				'doc' 		=> 'http://docs.xootix.com/mobile-login-for-woocommerce/semaphore/'
+			),
+			'msegat' 	=> array(
+				'title' 	=> 'Msegat',
+				'desc' 		=> '',
+				'service' 	=> XOO_ML_PATH.'/includes/services/class-xoo-ml-service-msegat.php',
+				'doc' 		=> 'http://docs.xootix.com/mobile-login-for-woocommerce/msegat/'
+			),
+			'custom' 	=> array(
+				'title' 	=> 'Custom',
+				'desc' 		=> '',
+				'service' 	=> XOO_ML_PATH.'/includes/services/class-xoo-ml-service-custom.php',
+				'doc' 		=> ''
 			)
 
 		);

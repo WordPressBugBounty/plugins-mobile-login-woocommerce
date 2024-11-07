@@ -9,7 +9,7 @@ class Xoo_Ml_Service_Semaphore extends Xoo_Ml_Service{
 		$this->id 			= 'semaphore';
 		$this->apikey 		= xoo_ml_helper()->get_service_option('semaphore-apikey');
 		$this->senderid 	= xoo_ml_helper()->get_service_option('semaphore-senderid');
-		$this->url 			= 'https://api.semaphore.co/api/v4/messages';
+		$this->url 			= 'https://api.semaphore.co/api/v4/otp';
 			
 	}
 

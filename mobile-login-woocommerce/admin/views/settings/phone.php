@@ -9,6 +9,30 @@ foreach ( $country_phone_codes as $cc => $pc ) {
 	$phone_codes[ $pc ] = $cc . $pc;
 }
 
+$enableCCDesc = 'A valid phone number needs a country code. If disabled, the default one selected below is set as country code.';
+if( function_exists('xoo_el') ){
+	$enableCCDesc .= ' * Please visit "Fields" page after updating and saving this setting to refresh Country code field.';
+}
+
+
+$smsOperators = array(
+	'twilio' 	=> 'Twilio',
+	'firebase' 	=> 'Google Firebase',
+	'aws'  		=> 'Amazon',
+	'blksms' 	=> 'Bulk SMS',
+	'bulksms' 	=> 'Bulk(s) SMS',
+	'netgsm' 	=> 'Net GSM (Turkey)',
+	'oursms' 	=> 'OurSMS',
+	'smsalert' 	=> 'SMS Alert',
+	'unifonic' 	=> 'Unifonic',
+	'msg91' 	=> 'MSG91',
+	'textlocal' => 'TextLocal',
+	'smslane' 	=> 'SMSLane',
+	'semaphore' => 'Semaphore (Phillipines)',
+	'msegat' 	=> 'Msegat',
+	'custom' 	=> 'Custom (None of the above)',
+);	
+
 
 $settings = array(
 
@@ -19,21 +43,7 @@ $settings = array(
 		'title' 		=> 'SMS Service Operator',
 		'default' 		=> 'firebase',
 		'args'			=> array(
-			'options' => array(
-				'twilio' 	=> 'Twilio',
-				'firebase' 	=> 'Google Firebase',
-				'aws'  		=> 'Amazon',
-				'blksms' 	=> 'Bulk SMS',
-				'bulksms' 	=> 'Bulk(s) SMS',
-				'netgsm' 	=> 'Net GSM (Turkey)',
-				'oursms' 	=> 'OurSMS',
-				'smsalert' 	=> 'SMS Alert',
-				'unifonic' 	=> 'Unifonic',
-				'msg91' 	=> 'MSG91',
-				'textlocal' => 'TextLocal',
-				'smslane' 	=> 'SMSLane',
-				'semaphore' => 'Semaphore (Phillipines)' 
-			)	
+			'options' => $smsOperators
 		)
 	),
 
@@ -48,6 +58,15 @@ $settings = array(
 	),
 
 
+	array(
+		'callback' 		=> 'checkbox',
+		'section_id' 	=> 'ph_main',
+		'id' 			=> 'm-en-debug',
+		'title' 		=> 'Enable debug',
+		'default' 		=> 'no',
+		'desc' 			=> "Show actual response from the SMS operator website. Useful when you want to debug the SMS failure."
+	),
+
 
 	array(
 		'callback' 		=> 'checkbox',
@@ -55,7 +74,7 @@ $settings = array(
 		'id' 			=> 'r-enable-cc-field',
 		'title' 		=> 'Enable Country Code Field',
 		'default' 		=> 'yes',
-		'desc' 			=> 'A valid phone number needs a country code. If disabled, the default one selected below is set as country code.'
+		'desc' 			=> $enableCCDesc
 	),
 
 
@@ -67,12 +86,11 @@ $settings = array(
 		'default' 		=> 'geolocation',
 		'desc' 			=> 'Leave empty to allow all countries',
 		'args'			=> array(
-			'options' => $phone_codes,
+			'options' 		=> $phone_codes,
 			'select2box' 	=> true,
 			'multiple' 		=> true
 		)
 	),
-
 
 	array(
 		'callback' 		=> 'select',
@@ -94,10 +112,10 @@ $settings = array(
 		'callback' 		=> 'select',
 		'section_id' 	=> 'ph_cc',
 		'id'			=> 'r-default-country-code',
-		'title' 		=> 'Default Country Code',
+		'title' 		=> 'Country Code',
 		'default' 		=> '+1',
 		'args'			=> array(
-			'options' 		=> $phone_codes,
+			'options' => $phone_codes,
 			'select2box' 	=> true,
 		)
 	),
@@ -106,7 +124,7 @@ $settings = array(
 		'callback' 		=> 'select',
 		'section_id' 	=> 'ph_cc',
 		'id'			=> 'm-show-country-code-as',
-		'title' 		=> 'Display Country Code Field as',
+		'title' 		=> 'Field Style',
 		'default' 		=> 'selectbox',
 		'desc' 			=> '',
 		'args'			=> array(
@@ -128,12 +146,18 @@ $settings = array(
 	),
 
 
+
 	array(
 		'callback' 		=> 'number',
 		'section_id' 	=> 'ph_otp',
 		'id'			=> 'otp-digits',
 		'title' 		=> 'OTP Digits',
 		'default' 		=> '4',
+		'args' 			=> array(
+			'custom_attributes' => array(
+				'autocomplete' => 'disableit'
+			)
+		)
 	),
 
 
@@ -200,6 +224,18 @@ $settings = array(
 		),
 	),
 
+
+	array(
+		'callback' 		=> 'textarea',
+		'section_id' 	=> 'ph_otp',
+		'id' 			=> 'r-sms-txt',
+		'title' 		=> 'SMS Text',
+		'desc' 			=> 'Shortcodes: [otp]"',
+		'default' 		=> '[otp] is your One Time Verification(OTP) to confirm your phone no at '.get_bloginfo( 'name' ),
+	),
+
+
+
 	array(
 		'callback' 		=> 'checkbox',
 		'section_id' 	=> 'ph_reg',
@@ -226,17 +262,6 @@ $settings = array(
 		)
 	),
 
-
-	array(
-		'callback' 		=> 'textarea',
-		'section_id' 	=> 'ph_reg',
-		'id' 			=> 'r-sms-txt',
-		'title' 		=> 'SMS Text',
-		'desc' 			=> 'Shortcodes: [otp]',
-		'default' 		=> __("[otp] is your One Time Verification(OTP) to confirm your phone no at xootix.",'mobile-login-woocommerce')
-	),
-
-
 	array(
 		'callback' 		=> 'checkbox',
 		'section_id' 	=> 'ph_reg',
@@ -250,20 +275,9 @@ $settings = array(
 		'callback' 		=> 'checkbox',
 		'section_id' 	=> 'ph_login',
 		'id' 			=> 'l-enable-login-with-otp',
-		'title' 		=> 'Enable Login with OTP',
+		'title' 		=> 'Login with Phone OTP',
 		'default' 		=> 'yes',
 		'desc' 			=> ''
-	),
-
-
-	array(
-		'callback' 		=> 'checkbox',
-		'section_id' 	=> 'ph_login',
-		'id' 			=> 'm-email-otp',
-		'title' 		=> 'Login with email OTP',
-		'default' 		=> 'yes',
-		'desc' 			=> 'Allow users to send OTP to email for login',
-		'pro' 			=> 'yes'
 	),
 
 
@@ -285,10 +299,92 @@ $settings = array(
 		'default' 		=> '',
 	),
 
+	array(
+		'callback' 		=> 'checkbox',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-email-otp',
+		'title' 		=> 'Login with email OTP',
+		'default' 		=> 'yes',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'textarea',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-em-txt',
+		'title' 		=> 'Email OTP Text',
+		'desc' 			=> 'Shortcodes: [otp]',
+		'default' 		=> '[otp] is your One Time Password (OTP) to login at '.get_bloginfo( 'name' ),
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'text',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-em-subj',
+		'title' 		=> 'Email OTP Subject',
+		'default' 		=> __( 'One time password', 'mobile-login-woocommerce' ),
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'text',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-em-sender-name',
+		'title' 		=> 'From - Sender Name',
+		'desc' 			=> 'How the sender name appears in outgoing emails.',
+		'default' 		=> get_bloginfo( 'name' ),
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'text',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-em-sender-em',
+		'title' 		=> 'From - Sender Email',
+		'desc' 			=> 'How the sender email appears in outgoing emails.',
+		'args' 			=> array(
+			'custom_attributes' => array(
+				'autocomplete' => 'disableit'
+			)
+		),
+		'pro' 			=> 'yes'
+	),
+
 );
 
 
 if( class_exists( 'woocommerce' ) ){
+
+	$settings[] = array(
+		'callback' 		=> 'select',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-email-temp',
+		'title' 		=> 'Email Template',
+		'args' 			=> array(
+			'options' => array(
+				'plugin' 		=> 'Plugin',
+				'woocommerce' 	=> 'Woocommerce'
+			),
+		),
+		'default' 		=> 'woocommerce',
+		'pro' 			=> 'yes'
+	);
+
+
+	$settings[] = array(
+		'callback' 		=> 'text',
+		'section_id' 	=> 'ph_emlogin',
+		'id' 			=> 'm-email-wctitle',
+		'title' 		=> 'WC Email Title',
+		'default' 		=> 'One Time Password for {site_title}',
+		'desc' 			=> '{site_title}',
+		'pro' 			=> 'yes'
+	);
+
+
 	$settings[] = array(
 		'callback' 		=> 'checkbox',
 		'section_id' 	=> 'woocommerce',
@@ -305,7 +401,7 @@ if( class_exists( 'woocommerce' ) ){
 		'id'			=> 'wc-chk-priority',
 		'title' 		=> 'Phone Field Location',
 		'default' 		=> 200,
-		'desc' 			=> 'Where should field appear in checkout form, woocommerce default billing phone value is 100',
+		'desc' 			=> 'Field positioning in checkout form, woocommerce default billing phone value is 100',
 		'pro' 			=> 'yes'
 	);
 
@@ -345,6 +441,7 @@ if( class_exists( 'woocommerce' ) ){
 
 }
 
+
 $popupLinks = array();
 if( function_exists('xoo_el') ){
 	$popupLinks[admin_url('admin.php?page=xoo-el-fields')] = 'Fields';
@@ -367,8 +464,6 @@ $settings[] = array(
 ); 
 
 
-
-
 $settings[] = array(
 	'callback' 		=> 'select',
 	'section_id' 	=> 'ph_popup',
@@ -382,8 +477,6 @@ $settings[] = array(
 		)	
 	)
 ); 
-
-
 
 return apply_filters( 'xoo_ml_admin_settings', $settings, 'phone' );
 

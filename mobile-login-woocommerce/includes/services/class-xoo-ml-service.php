@@ -25,15 +25,30 @@ class Xoo_Ml_Service{
 			$args['headers'] = $headers;
 		}
 
+
 		$response = wp_remote_post(
 			apply_filters( 'xoo_ml_service_http_url', $this->url, $this ),
 			apply_filters( 'xoo_ml_service_http_args', $args, $this )
 		);
-		
+
+		return $this->handle_response($response);
+
+	}
+
+	public function handle_response( $response ){
 		if( is_wp_error( $response ) ){
 			return $response;
 		}
-
+		else{
+			if( xoo_ml_helper()->get_phone_option('m-en-debug') === 'yes' ){
+				wp_send_json(array(
+					'error' => 1,
+					'notice' => xoo_ml_add_notice( 'Response Received => '.$response['body'], 'error' ).'<br>'. xoo_ml_add_notice( 'Data Passed => '. json_encode( $args ), 'success' )
+					)
+				);
+				exit;
+			}
+		}
 	}
 
 	public function include_sdk( $location ){

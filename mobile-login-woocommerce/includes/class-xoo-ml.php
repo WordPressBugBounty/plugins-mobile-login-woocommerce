@@ -106,6 +106,12 @@ class Xoo_Ml{
 			
 		}
 
+		if( $db_version && version_compare( $db_version, '2.6.3', '<') ){
+			$services = xoo_ml_helper()->get_service_option();
+			$services['asns-region'] = 'us-east-1';
+			update_option( 'xoo-ml-services-options', $services );
+		}
+
 		if( version_compare( $db_version, XOO_ML_VERSION, '<') ){
 			//Update to current version
 			update_option( $version_option, XOO_ML_VERSION);

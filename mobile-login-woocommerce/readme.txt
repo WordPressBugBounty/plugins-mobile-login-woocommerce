@@ -5,7 +5,7 @@ Tags: woocommerce, sms, login, phone, register
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
 Tested up to: 6.6
-Stable tag: 2.6.2
+Stable tag: 2.6.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,10 @@ Copy the template file to your theme->templates folder and make the desired chan
 = 1.0 =
 
 == Changelog ==
+
+= 2.6.3 =
+* New - Custom SMS gateway option
+* Fix - Amazon region option
 
 = 2.6.2 =
 * New - SMS Operators - SMSLane, Semaphore
