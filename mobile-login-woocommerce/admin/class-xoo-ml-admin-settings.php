@@ -30,6 +30,8 @@ class Xoo_Ml_Admin_Settings{
 			add_action( 'admin_menu', array( $this, 'add_menu_pages' ) );
 		}
 
+
+
 		add_action( 'xoo_tab_page_end', array( $this, 'tab_html' ), 10, 2 );
 
 		add_action( 'xoo_tab_page_start', array( $this, 'notices' ), 5 );
@@ -261,6 +263,8 @@ class Xoo_Ml_Admin_Settings{
 	}
 
 	public function unzip_sdk( $fileurl, $toabs = true ){
+
+		if( !$fileurl || !trim($fileurl) ) return;
 
 		$sdk = get_attached_file( attachment_url_to_postid( $fileurl) );
 
