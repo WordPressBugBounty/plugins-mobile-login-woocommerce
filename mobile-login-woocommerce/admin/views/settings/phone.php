@@ -64,7 +64,7 @@ $settings = array(
 		'id' 			=> 'm-en-debug',
 		'title' 		=> 'Enable debug',
 		'default' 		=> 'no',
-		'desc' 			=> "Show actual response from the SMS operator website. Useful when you want to debug the SMS failure."
+		'desc' 			=> "Shows actual response from the SMS operator website. This will stop the plugin flow and will only show the response, so disable it once you're done debugging."
 	),
 
 

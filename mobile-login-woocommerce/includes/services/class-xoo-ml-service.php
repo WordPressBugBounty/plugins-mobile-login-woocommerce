@@ -31,11 +31,6 @@ class Xoo_Ml_Service{
 			apply_filters( 'xoo_ml_service_http_args', $args, $this )
 		);
 
-		return $this->handle_response($response);
-
-	}
-
-	public function handle_response( $response ){
 		if( is_wp_error( $response ) ){
 			return $response;
 		}
@@ -49,6 +44,7 @@ class Xoo_Ml_Service{
 				exit;
 			}
 		}
+
 	}
 
 	public function include_sdk( $location ){
