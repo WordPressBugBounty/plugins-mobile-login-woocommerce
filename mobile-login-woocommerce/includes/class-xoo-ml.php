@@ -101,15 +101,26 @@ class Xoo_Ml{
 		$version_option = 'xoo-ml-version';
 		$db_version 	= get_option( $version_option );
 
+		$services 		= xoo_ml_helper()->get_service_option();
+
 		//If first time installed
 		if( !$db_version ){
 			
 		}
 
-		if( $db_version && version_compare( $db_version, '2.6.3', '<') ){
-			$services = xoo_ml_helper()->get_service_option();
-			$services['asns-region'] = 'us-east-1';
+		if( $db_version ){
+
+			if( version_compare( $db_version, '2.6.3', '<') ){
+				$services['asns-region'] = 'us-east-1';
+				
+			}
+
+			if( version_compare( $db_version, '2.6.6', '<') ){
+				$services['cus-format'] = 'url';
+			}
+
 			update_option( 'xoo-ml-services-options', $services );
+
 		}
 
 		if( version_compare( $db_version, XOO_ML_VERSION, '<') ){

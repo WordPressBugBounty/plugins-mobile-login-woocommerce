@@ -403,6 +403,23 @@ $settings = array(
 		'desc' 			=> 'For eg: https://api.textlocal.in/send/'
 	),
 
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'select',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-format',
+		'title' 		=> 'Data Format',
+		'args' 			=> array(
+			'options' 		=> array(
+				'url' 		=> 'URL encoded',
+				'json' 		=> 'JSON',
+			),
+		),
+		'default' 		=> 'url'
+	),
+
+
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'textarea',

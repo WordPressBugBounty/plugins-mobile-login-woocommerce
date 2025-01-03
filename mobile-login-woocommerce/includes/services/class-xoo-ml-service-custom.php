@@ -10,6 +10,7 @@ class Xoo_Ml_Service_Custom extends Xoo_Ml_Service{
 		$this->apiparams 	= wp_parse_args( html_entity_decode( xoo_ml_helper()->get_service_option('cus-params') ) );
 		$this->url 			= xoo_ml_helper()->get_service_option('cus-url');
 		$this->method 		= xoo_ml_helper()->get_service_option('cus-method');
+		$this->format 		= xoo_ml_helper()->get_service_option('cus-format');
 			
 	}
 
@@ -48,6 +49,13 @@ class Xoo_Ml_Service_Custom extends Xoo_Ml_Service{
 			'method' 	=> $this->method,
 	 		'body' 		=> $apiparams
 	    );
+
+	    if( $this->format === 'json' ){
+	    	$args['headers'][] = array(
+	    		'Content-Type' => 'application/json'
+	    	);
+	    	$args['body'] = wp_json_encode( $args['body'] );
+	    }
 
 		return $this->http_request( $args );
 

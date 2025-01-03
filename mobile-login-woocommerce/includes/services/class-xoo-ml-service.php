@@ -24,8 +24,7 @@ class Xoo_Ml_Service{
 
 			$args['headers'] = $headers;
 		}
-
-
+		
 		$response = wp_remote_post(
 			apply_filters( 'xoo_ml_service_http_url', $this->url, $this ),
 			apply_filters( 'xoo_ml_service_http_args', $args, $this )
