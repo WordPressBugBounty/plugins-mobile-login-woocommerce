@@ -2,7 +2,7 @@
 
 class Xoo_Ml_Service{
 
-	public $id, $username, $password, $url;
+	public $id, $username, $password, $url, $authToken;
 
 	public $hasSDK = false; //Needs PHP SDK to run
 
@@ -15,20 +15,25 @@ class Xoo_Ml_Service{
 
 	public function http_request( $args ){
 
+		$headers =  isset( $args['headers'] ) ? $args['headers'] : array();
+
 		//Basic authorization
 		if( isset( $this->username ) ){
-
-			$headers =  isset( $args['headers'] ) ? $args['headers'] : array();
-
 			$headers['Authorization'] = 'Basic ' . base64_encode( $this->username . ':' . $this->password );
-
-			$args['headers'] = $headers;
 		}
-		
+
+		if( isset( $this->authToken ) ){
+			$headers['Authorization'] = 'Bearer ' . $this->authToken;
+		}
+
+		$args['headers'] = $headers;
+
+
 		$response = wp_remote_post(
 			apply_filters( 'xoo_ml_service_http_url', $this->url, $this ),
 			apply_filters( 'xoo_ml_service_http_args', $args, $this )
 		);
+
 
 		if( is_wp_error( $response ) ){
 			return $response;

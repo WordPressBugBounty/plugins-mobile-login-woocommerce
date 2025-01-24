@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/mobile-login-woocommerce/
- * @version 2.0
+ * @version 2.6.7
  */
 
 
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<div class="xoo-ml-otp-input-cont">
 		<?php for ( $i= 0; $i < xoo_ml_helper()->get_phone_option('otp-digits'); $i++ ): ?>
-			<input type="text" maxlength="1" autocomplete="off" name="xoo-ml-otp[]" class="xoo-ml-otp-input">
+			<input type="tel" autocomplete="off" name="xoo-ml-otp[]" class="xoo-ml-otp-input">
 		<?php endfor; ?>
 	</div>
 

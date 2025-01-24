@@ -21,6 +21,8 @@ jQuery(document).ready(function($){
 
 		self.firebaseAuth 		= false;
 
+		self.OTPPasted 			= false;
+
 		if( self.displayType === 'external_form' ){
 			if( !self.$phoneForm.next( 'form.xoo-ml-otp-form' ).length ){
 				$( xoo_ml_phone_localize.html.otp_form_external ).insertAfter(this.$phoneForm);
@@ -63,7 +65,12 @@ jQuery(document).ready(function($){
 		if( self.displayType === 'external_form' ){
 			self.$otpForm.find('.xoo-ml-otp-no-change').on( 'click', { otpForm: self }, self.changeNumber );
 			self.$otpForm.on( 'submit', { otpForm: self }, self.onSubmit );
-			self.$inputs.on( 'keyup', { otpForm: self }, self.onInputChange );
+			//self.$inputs.on( 'keyup', { otpForm: self }, self.onInputChange );
+
+			self.$inputs.on( 'paste', { _thisObj: self }, self.onOTPInputPaste );
+			self.$inputs.on( 'input', { _thisObj: self }, self.onOTPInputChange );
+			self.$inputs.on( 'keydown ', { _thisObj: self }, self.beforeOTPInputChange );
+
 		}
 		else{
 			self.$submitBtn.on( 'click', { otpForm: self }, self.onSubmit );
@@ -159,6 +166,105 @@ jQuery(document).ready(function($){
 		this.$inputs.val('');
 		this.$phoneForm.show();
 	}
+
+
+	otpForm.prototype.onOTPInputPaste = function(event){
+
+			var _thisObj 		= event.data._thisObj,
+				_this 			= $(this);
+
+			_thisObj.OTPPasted 	= true;
+
+			setTimeout(function(){
+
+				var inputVal 		= _this.val(),
+				inputValLength 		= inputVal.length;
+
+				_thisObj.$inputs.val('');
+
+				for (var i = 0; i < inputValLength; ++i) {
+
+					var chr 		= inputVal.charAt(i),
+						$OTPinput 	= $(_thisObj.$inputs.get(i));
+					
+				    if( $OTPinput.length ){
+				    	$OTPinput.val(chr);
+				    }
+
+				    if( i === (inputValLength - 1) ){
+				    	$OTPinput.focus();
+				    }
+				}
+
+				if( inputValLength === _thisObj.$inputs.length ){
+					_thisObj.$otpForm.trigger('submit');
+				}
+
+				_thisObj.OTPPasted = false;
+
+			}, 10 )
+
+		}
+
+		otpForm.prototype.onOTPInputChange = function(event){
+
+			var _thisObj 		= event.data._thisObj,
+				inputVal 		= $(this).val(),
+				inputValLength 	= inputVal.length;
+
+			if( inputValLength > 1 && !_thisObj.OTPPasted  ){
+				$(this).trigger('paste');
+				return;
+			}
+
+			if( _thisObj.OTPPasted || _thisObj.processing ){
+				return;
+			}
+
+			_thisObj.processing = true;
+
+			var $nextInput = $(this).next('input.xoo-ml-otp-input'),
+				$prevInput = $(this).prev('input.xoo-ml-otp-input');
+
+			
+			//Switch Input
+			if( inputValLength && $nextInput.length !== 0 ){
+				$nextInput.focus();
+			}
+
+			
+			_thisObj.processing = false;
+				
+		}
+
+		otpForm.prototype.beforeOTPInputChange = function(event){
+
+			var _thisObj 		= event.data._thisObj,
+				inputVal 		= $(this).val(),
+				inputValLength 	= inputVal.length;
+
+
+			var $nextInput = $(this).next('input.xoo-ml-otp-input'),
+				$prevInput = $(this).prev('input.xoo-ml-otp-input');
+
+
+			if( inputVal.length && event.keyCode != 8 && event.keyCode !== 13 ){
+
+				if( $nextInput.length && !$nextInput.val() ){
+					$nextInput.focus();
+				}
+				else{
+					$(this).val('');
+				}
+				
+			}
+
+			//Backspace is pressed
+			if( !inputValLength && event.keyCode == 8 && $prevInput.length !== 0 ){
+				$prevInput.focus();
+			}
+
+		}
 
 	otpForm.prototype.onInputChange = function( event ){
 

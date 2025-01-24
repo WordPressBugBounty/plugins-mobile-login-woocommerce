@@ -52,5 +52,38 @@ jQuery(document).ready(function($){
 		}
 	} )
 
+	$('select[name="xoo-ml-services-options[cus-format]"]').on( 'change', function(){
+
+		var $jsonField 	= $('textarea[name="xoo-ml-services-options[cus-json]"]'),
+			$urlField 	= $('textarea[name="xoo-ml-services-options[cus-params]"]');
+
+		if( $(this).val() === 'json' ){
+			$urlField.closest('.xoo-as-setting').hide();
+			$jsonField.closest('.xoo-as-setting').show();
+		}
+		else{
+			$jsonField.closest('.xoo-as-setting').hide();
+			$urlField.closest('.xoo-as-setting').show();
+		}
+
+	} ).trigger('change');
+
+
+	$('select[name="xoo-ml-services-options[cus-auth-type]"]').on( 'change', function(){
+
+		var $tokenField = $('input[name="xoo-ml-services-options[cus-auth-info]"]').closest('.xoo-as-setting');
+
+		if( $(this).val() === 'none' ){
+			$tokenField.hide();
+		}
+		else{
+			$tokenField.show();
+		}
+
+	} ).trigger('change');
+
+
+
+
 
 });

@@ -5,7 +5,7 @@ Tags: woocommerce, sms, login, phone, register
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 2.6.6
+Stable tag: 2.6.7
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ Allow users to login/signup with one time password(OTP) sent on your mobile devi
 * Adds a phone number field to the signup form
 * No need to remember email/password, login with OTP
 * Fully customizable
-* Woocommerce & Gravity Forms Compatible
+* Woocommerce  Compatible
 * Fully Ajaxed.
 
 
@@ -93,6 +93,10 @@ Copy the template file to your theme->templates folder and make the desired chan
 = 1.0 =
 
 == Changelog ==
+= 2.6.7 =
+* New - added Authorization fields for custom SMS gateway.
+* Fix - copy paste OTP for external form type
+* Template update - xoo-ml-external-otp-form.php and xoo-ml-inline-otp-input.php
 
 = 2.6.6 =
 * New - added JSON data format for custom SMS gateway

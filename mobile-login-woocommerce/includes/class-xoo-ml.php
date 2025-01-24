@@ -119,6 +119,10 @@ class Xoo_Ml{
 				$services['cus-format'] = 'url';
 			}
 
+			if( version_compare( $db_version, '2.6.7', '<') ){
+				$services['cus-json'] =  $services['cus-format'] === 'json' && !empty( $services['cus-params'] ) ? json_encode( wp_parse_args( html_entity_decode( $services['cus-params'] ) ) ) : '';
+			}
+
 			update_option( 'xoo-ml-services-options', $services );
 
 		}

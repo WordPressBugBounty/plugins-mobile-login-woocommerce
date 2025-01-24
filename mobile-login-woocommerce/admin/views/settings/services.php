@@ -429,6 +429,16 @@ $settings = array(
 		'desc' 			=> 'separated by &.<br>Shortcodes: Phone number of message recepient: [phone_number]<br>Message: [message]<br>For eg: apiKey=xxxx&senderID=yyy&numbers=[phone_number]&message=[message]<br>'
 	),
 
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'textarea',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-json',
+		'title' 		=> 'API JSON data',
+		'desc' 			=> 'Shortcodes: Phone number of message recepient: [phone_number]<br>Message: [message]<br>For eg:<br> {<br>"number": "[phone_number]",<br> "message": "[message]",<br>"senderID": "XXX"<br>}'
+	),
+
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'select',
@@ -442,6 +452,34 @@ $settings = array(
 			),
 		),
 		'default' 		=> 'POST'
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'select',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-auth-type',
+		'title' 		=> 'Authorization Type',
+		'args' 			=> array(
+			'options' 		=> array(
+				'basic' 	=> 'Basic',
+				'bearer' 	=> 'Bearer',
+				'none' 		=> 'None' 
+			),
+		),
+		'default' 		=> 'none',
+		'desc' 			=> 'If the SMS gateway API request needs an authorization (optional, not every SMS gateway requires it)'
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-auth-info',
+		'title' 		=> 'Authorization Token/(Username & Password)',
+		'desc' 			=> 'For authorization type "Bearer", simply add the token.<br> For authorization type "basic", add the username & password separated by colon(:) in format (username:password). For eg if your username is abc and password is xyz, the value would be abc:xyz'
 	),
 
 
