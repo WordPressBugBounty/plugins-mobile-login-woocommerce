@@ -14,7 +14,7 @@ class Xoo_Ml_Service_Unifonic extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->appid, $this->senderid ) );
 

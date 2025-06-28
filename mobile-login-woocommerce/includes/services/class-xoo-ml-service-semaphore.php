@@ -13,7 +13,7 @@ class Xoo_Ml_Service_Semaphore extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->apikey, $this->senderid ) );
 

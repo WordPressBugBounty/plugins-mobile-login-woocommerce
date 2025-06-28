@@ -162,6 +162,8 @@ a.xoo-ml-otp-resend-link.xoo-ml-disabled {
 
 .xoo-ml-has-cc {
     display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .xoo-ml-has-cc select.xoo-ml-phone-cc, .xoo-ml-has-cc input.xoo-ml-phone-cc {
@@ -172,11 +174,13 @@ a.xoo-ml-otp-resend-link.xoo-ml-disabled {
 
 .xoo-ml-regphin {
     position: relative;
-    width: 100%;
+    flex: 1;
+    min-width: 170px;
 }
 
 .xoo-ml-regphin input.xoo-ml-phone-input{
     width: 100%;
+    min-width: 170px;
 }
 
 input#xoo-ml-reg-phone {
@@ -297,7 +301,6 @@ form.xoo-lwo-form {
 
 select.xoo-ml-phone-cc + .select2.select2-container {
     min-width: 120px;
-    margin-right: 15px;
 }
 
 .xoo-ml-phone-cc + .select2 span.select2-selection__arrow {

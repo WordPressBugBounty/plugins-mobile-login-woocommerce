@@ -14,7 +14,7 @@ class Xoo_Ml_Service_Netgsm extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->usercode, $this->password ) );
 

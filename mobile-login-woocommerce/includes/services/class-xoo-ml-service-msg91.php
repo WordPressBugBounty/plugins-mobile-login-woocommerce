@@ -15,7 +15,7 @@ class Xoo_Ml_Service_Msg91 extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->authkey ) );
 

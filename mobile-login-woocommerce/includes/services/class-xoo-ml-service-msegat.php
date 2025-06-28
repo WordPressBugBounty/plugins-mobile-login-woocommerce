@@ -16,7 +16,7 @@ class Xoo_Ml_Service_Msegat extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->user, $this->apikey, $this->usersender ) );
 

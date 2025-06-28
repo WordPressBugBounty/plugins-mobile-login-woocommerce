@@ -6,9 +6,9 @@ class Xoo_Ml_Helper extends Xoo_Helper{
 
 	public $mergeCC;
 
-	public static function get_instance( $slug, $path ){
+	public static function get_instance( $slug, $path, $helperArgs = array() ){
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $slug, $path );
+			self::$_instance = new self( $slug, $path, $helperArgs );
 		}
 		return self::$_instance;
 	}
@@ -35,7 +35,10 @@ class Xoo_Ml_Helper extends Xoo_Helper{
 }
 
 function xoo_ml_helper(){
-	return Xoo_Ml_Helper::get_instance( 'mobile-login-woocommerce', XOO_ML_PATH );
+	return Xoo_Ml_Helper::get_instance( 'mobile-login-woocommerce', XOO_ML_PATH, array(
+		'pluginFile' => XOO_ML_PLUGIN_FILE,
+		'pluginName' => 'OTP Login Woocommerce'
+	) );
 }
 xoo_ml_helper();
 

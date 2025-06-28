@@ -4,8 +4,8 @@ Donate link: https://www.paypal.me/xootix
 Tags: woocommerce, sms, login, phone, register
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
-Tested up to: 6.7
-Stable tag: 2.6.7
+Tested up to: 6.8
+Stable tag: 2.6.8
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,7 @@ Options available
 ### Pro Features:
 
 * Login with Email OTP.
+* Two Factor Authentication - SMS/Email
 * Validate and verify phone number in checkout form before customer places an order.
 * Register with a single click. Email & Password less registration.
 * Manage registration fields.
@@ -93,6 +94,11 @@ Copy the template file to your theme->templates folder and make the desired chan
 = 1.0 =
 
 == Changelog ==
+
+= 2.6.8 =
+* Custom SMS operator settings fix
+* Settings UI update
+
 = 2.6.7 =
 * New - added Authorization fields for custom SMS gateway.
 * Fix - copy paste OTP for external form type

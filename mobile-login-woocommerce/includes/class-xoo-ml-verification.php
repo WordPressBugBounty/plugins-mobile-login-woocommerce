@@ -324,7 +324,7 @@ class Xoo_Ml_Phone_Verification{
 
 			if( $phoneFormData['form'] === 'login_with_otp' ){
 				if( !$user ){
-					throw new Xoo_Exception( __( 'We cannot find an account with that mobile number', 'mobile-login-woocommerce' ) );
+					throw new Xoo_Exception( __( 'We cannot find an account with that mobile number. Please register.', 'mobile-login-woocommerce' ) );
 				}
 				else{
 					$phone_code = get_user_meta( $user->ID, 'xoo_ml_phone_code', true );

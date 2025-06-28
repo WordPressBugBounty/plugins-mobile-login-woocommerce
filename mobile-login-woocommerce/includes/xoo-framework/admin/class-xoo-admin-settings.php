@@ -24,6 +24,8 @@ class Xoo_Admin{
 
 	public $capability = 'manage_options';
 
+	public $usageURL 	= 'https://xootix.com/wp-json/usage/v1/data';
+
 	public function __construct( $helper ){
 		$this->helper 			= $helper;
 		$this->settings_slug 	= $this->helper->slug . '-settings';
@@ -64,7 +66,125 @@ class Xoo_Admin{
 			add_action( 'xoo_tab_page_start', array( $this, 'shortcode_info' ), 20, 2 );
 			
 		}
+
+		if( isset( $this->helper->helperArgs ) && !isset($this->helper->helperArgs['disable_usage']) ){
+
+			add_action( 'admin_notices', array( $this, 'usage_data_notice' ) );
+			add_action( 'admin_init', array( $this, 'handle_usage_click_response' ) );
+			add_action( 'admin_init', array( $this, 'send_usage_data_timely' ) );
+
+			if( $this->helper->helperArgs['pluginFile'] ){
+				register_deactivation_hook( $this->helper->helperArgs['pluginFile'] , array( $this, 'on_plugin_deactivate' ) );
+			}
+
+		}
+		
+
 	}
+
+
+	public function usage_data_notice(){
+
+		if( get_option( 'xoo_tracking_consent_'.$this->helper->slug ) !== false ) return;
+
+		$pluginName = isset( $this->helper->helperArgs )  && $this->helper->helperArgs['pluginName'] ? $this->helper->helperArgs['pluginName'] : $this->helper->slug;
+
+		?>
+		<div class="notice notice-info xoo-usage-consent" style="max-width: 1300px;">
+			<p><strong>[<?php echo $pluginName ?>] Help us improve!</strong> We'd love your permission to send anonymous, non-sensitive data (such as your WordPress version, plugin settings, etc.) to help us improve the plugin.<br><strong> No personal information is collected ever</strong></p>
+				<form method="post" action="" class="xoo-usage-consent">
+					<input type="checkbox" name="xoo_allow" value="yes" checked>
+					<input type="hidden" name="xoo_usage_handle" value="yes">
+					<input type="hidden" name="xoo_slug" value="<?php echo $this->helper->slug ?>">
+					<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'xoo_usage_nonce' ) ?>">
+					<button type="submit" class="button-small button">ok, dismiss notice</button>
+				</form>
+			</p>
+		</div>
+
+		<style type="text/css">
+			.xoo-usage-consent button{
+
+			}
+		</style>
+
+		<?php
+
+	}
+
+	public function handle_usage_click_response(){
+
+		if( !isset( $_POST['xoo_usage_handle'] ) ) return;
+
+		$slug 		= sanitize_text_field( $_POST['xoo_slug'] );
+		$nonce 		= sanitize_text_field( $_POST['_wpnonce'] );
+		$response 	= sanitize_text_field( $_POST['xoo_allow'] );
+
+		if( $this->helper->slug !== $slug ) return;
+
+		if( !wp_verify_nonce( $_POST['_wpnonce'], 'xoo_usage_nonce' ) ) return;
+
+		update_option( 'xoo_tracking_consent_'.$this->helper->slug, $response );
+
+		wp_redirect( remove_query_arg( 'xooisrandom' ) );
+
+	}
+
+
+	public function is_usage_allowed(){
+		return get_option( 'xoo_tracking_consent_'.$this->helper->slug, true ) === 'yes';
+	}
+
+
+	public function send_usage_data_timely(){
+
+		if( !$this->is_usage_allowed() ) return; //permission not given
+
+		if( get_transient( 'xoo_tracking_consent_last_sent_'.$this->helper->slug ) !== false ) return; //date not expired.
+
+		$response = $this->usage_data_http_request();
+
+		$fetchAgain = isset( $response['success'] ) ? DAY_IN_SECONDS * 15 : DAY_IN_SECONDS;
+
+		set_transient( 'xoo_tracking_consent_last_sent_'.$this->helper->slug, 'yes', $fetchAgain  );
+		
+	}
+
+
+	public function usage_data_http_request( $passed_data = array() ){
+
+		$helperdata = $this->helper->get_usage_data();
+
+		$defaults 	= array(
+			'slug' 			=> $this->helper->slug,
+			'site_url' 		=> get_site_url(),
+			'wp_version' 	=> get_bloginfo( 'version' ),
+			'active' 		=> 1,
+		);
+
+		$data = array_merge( $defaults, $passed_data, $helperdata );
+
+		$httprequest = wp_remote_post(
+			$this->usageURL,
+			array(
+				'body' => $data
+			)
+		);
+
+		$response = json_decode(wp_remote_retrieve_body($httprequest), true);
+
+		return $response;
+	}
+
+
+	public function on_plugin_deactivate(){
+		if( !$this->is_usage_allowed() ) return;
+		$this->usage_data_http_request( array(
+			'active' => 0
+		) );
+		delete_transient( 'xoo_tracking_consent_last_sent_'.$this->helper->slug );
+	}
+
 
 	public function export_settings(){
 
@@ -199,9 +319,15 @@ class Xoo_Admin{
 
 		do_action( 'xoo_admin_settings_'.$this->helper->slug.'_before_saving', $formData );
 
-		foreach ( $formData as $option_key => $option_data ) {
-			$option_data = stripslashes_deep( $option_data );
-			update_option( $option_key, $option_data );
+		foreach ( $this->settings as $tab_id => $sections_settings ) {
+
+			if( !isset( $this->tabs[ $tab_id ] ) ) continue;
+
+			$option_key = $this->tabs[ $tab_id ]['option_key'];
+
+			if( !isset( $formData[ $option_key ] ) ) continue;
+
+			$this->save_option( $option_key, $sections_settings, $formData[ $option_key ] );
 		}
 
 		do_action( 'xoo_admin_settings_'.$this->helper->slug.'_saved', $formData );
@@ -213,6 +339,50 @@ class Xoo_Admin{
 	}
 
 
+	public function save_option( $option_key, $sections_settings, $formData ){
+
+		$option_data = array();
+
+		foreach ( $sections_settings as $section_id => $settings ) {
+			
+			foreach ( $settings as $setting_id => $setting ) {
+
+				if( !isset( $formData[ $setting_id ] ) ) continue;
+
+				$value = $formData[ $setting_id ];
+
+				$sanitized = false;
+
+				
+				if(  ( isset( $setting['args']['group'] ) && $setting['args']['group'] === 'css' ) || strpos( $setting['title'], 'CSS' ) ){
+					$value = wp_strip_all_tags( $value );
+					$sanitized = true;
+				}
+
+				
+				if( !$sanitized ){
+					
+					switch ( $setting['callback'] ) {
+						case 'textarea':
+							$value = xoo_clean( $value, 'wp_kses_post' );
+						
+						default:
+							$value = xoo_clean($value);
+							break;
+					}
+
+				}
+
+				$option_data[ $setting_id ] = $value;
+
+			}
+
+		}
+	
+		$option_data = stripslashes_deep( $option_data );
+
+		update_option( $option_key, $option_data );
+	}
 
 
 	public function enqueue_scripts() {
@@ -308,6 +478,7 @@ class Xoo_Admin{
 			)
 		);
 
+
 		$priority 	= $args['priority'];
 		unset( $args['priority'] );
 
@@ -319,6 +490,8 @@ class Xoo_Admin{
 			'pro' 			=> $pro,
 			'args' 			=> $args
 		); 
+
+
 	}
 
 	public function register_section( $title, $id, $tab_id, $desc = '', $pro = 'no', $args = array() ){
@@ -384,7 +557,7 @@ class Xoo_Admin{
 
 		uasort( $data, function( $a, $b ){
 
-			if( $a['priority'] === $b['priority'] ){
+			if( !isset( $a['priority'] ) || !isset( $b['priority'] ) || $a['priority'] === $b['priority'] ){
 				return 0;
 			}
 			return $a['priority'] > $b['priority']  ? 1 : -1;
@@ -578,7 +751,7 @@ class Xoo_Admin{
 
 			if( $section_settings ){
 
-				$section_heading = '<span class="xoo-asc-head xoo-asc-'.$section_id.'">'.$section_data['title'].'</span>';
+				$section_heading = '<span id="'.$tab_id.'_'.$section_id.'" class="xoo-asc-head xoo-asc-'.$section_id.'">'.$section_data['title'].'</span>';
 
 				if( $section_data['desc'] ){
 					$section_heading .= '<span class="xoo-asc-desc">'.$section_data['desc'].'</span>';
@@ -600,6 +773,17 @@ class Xoo_Admin{
 
 		echo $html;
 
+	}
+
+
+	public function get_setting_html_pop( $tab_id, $section_id, $field_id ){
+
+		$option_key 	= $this->tabs[ $tab_id ]['option_key'];
+		$id 			= $option_key.'['.$field_id.']';
+
+		$setting = $this->settings[ $tab_id ][ $section_id ][ $field_id ];
+
+		return $this->get_setting_html( $id, $setting  );
 	}
 
 
@@ -664,30 +848,30 @@ class Xoo_Admin{
 
 
 
-		$field_container = '<div class="%1$s" data-setting="%3$s">%2$s</div>';
+		$field_container = '<div class="%1$s" data-setting="%3$s" data-field_id="'.$field_id.'">%2$s</div>';
 
 		$field = '';
 		switch ( $callback ) {
 
 			case 'text':
 			case 'number':
-				$field .= '<input type="'.$callback.'" name="'.$field_id.'" value="'.$value.'" '.$custom_attributes.'>';
+				$field .= '<input type="'.$callback.'" name="'.$field_id.'" value="'.esc_attr( $value ).'" '.$custom_attributes.'>';
 				break;
 
 			case 'textarea':
 				$rows  	= isset( $args['rows'] ) ? $args['rows'] : 4;
 				$cols 	= isset( $args['cols'] ) ? $args['cols'] : 50;
-				$field .= '<textarea name="'.$field_id.'" rows="'.$rows.'" cols="'.$cols.'" '.$custom_attributes.'>'.$value.'</textarea>';
+				$field .= '<textarea name="'.$field_id.'" rows="'.$rows.'" cols="'.$cols.'" '.$custom_attributes.'>'.esc_textarea( $value ).'</textarea>';
 				break;
 
 			case 'color':
-				$field .= '<input type="text" name="'.$field_id.'" class="xoo-as-color-input" value="'.$value.'" '.$custom_attributes.'>';
+				$field .= '<input type="text" name="'.$field_id.'" class="xoo-as-color-input" value="'.esc_attr($value).'" '.$custom_attributes.'>';
 				break;
 
 			case 'checkbox':
 				$field 	= '<label class="xoo-as-switch">';
 				$field .= '<input type="hidden" name="'.$field_id.'" value="no">';
-				$field .= '<input name='.$field_id.' type="checkbox" value="yes" '.checked( $value, 'yes', false ).' '.$custom_attributes.'>';
+				$field .= '<input name='.$field_id.' type="checkbox" value="yes" '.checked( esc_attr( $value ), 'yes', false ).' '.$custom_attributes.'>';
 				$field .= '<span class="xoo-as-slider"></span>';
 				$field .= '</label>';
 				break;
@@ -726,7 +910,7 @@ class Xoo_Admin{
 				foreach ( $args['options'] as $option_key => $option_label ) {
 					$selected = is_array( $value ) ? in_array( $option_key , $value ) : $value === $option_key;
 					$selected = $selected ? 'selected' : '';
-					$options .= '<option value="'.$option_key.'" '.$selected.' data-cc="asd">'.$option_label.'</option>';
+					$options .= '<option value="'.$option_key.'" '.$selected.'>'.$option_label.'</option>';
 				}
 
 				$select_field_id = isset( $args['multiple'] ) && $args['multiple'] ? $field_id.'[]' : $field_id;
@@ -819,6 +1003,52 @@ class Xoo_Admin{
 
 			case 'upload':
 				$field .= $this->get_setting_upload_markup( $field_id, $value );
+
+
+			case 'asset_selector':
+
+				if( !isset( $args['options'] ) || empty( $args['options'] ) ) break;
+
+				$allowMultiple = isset( $args['custom_attributes']['data-multiple'] ) && $args['custom_attributes']['data-multiple'] === "yes";
+
+				$name =  $allowMultiple ? $field_id.'[]' : $field_id;
+
+				$field .= '<div class="xoo-as-pattern-cont" '.$custom_attributes.'>';
+
+				$info_html = '';
+
+				foreach ( $args['options'] as $option_key => $option_data ) {
+
+					$checked 	= 	( is_array( $value ) && in_array( $option_key, $value ) ) || ( !is_array( $value ) && $value === $option_key ) ? 'checked' : '';
+
+					$option_html 	 = '<div class="xoo-as-pat-imgcont">';
+
+					$option_html 	.= '<img class="xoo-as-patimg" src="'.$option_data['asset'].'" data-key="'.$option_key.'">';
+
+					$option_html  	.= '<input class="xoo-as-patcheckbox" name="'.$name.'" type="checkbox" value="'.$option_key.'" '.$checked.'>';
+
+					$option_html 	.= '</div>';
+
+					$option_html 	.= '<div class="xoo-as-patdesc">';
+
+					$option_html 	.= '<span>'.$option_data['title'].'</span>';
+
+					if( isset( $option_data['info'] ) ){
+						$option_html 	.= '<span class="dashicons dashicons-info xoo-as-info-hover" data-key="'.$option_key.'"></span>';
+						$info_html 		.= '<span class="xoo-as-info" data-key="'.$option_key.'">'.$option_data['info'].'</span>';
+					}
+
+					$option_html 	.= '</div>';
+						
+					$field .= sprintf( '<div>%1$s</div>', $option_html );
+
+				}
+
+				$field .= $info_html;
+
+				$field .= '</div>';
+
+				break;
 			
 			default:
 				# code...

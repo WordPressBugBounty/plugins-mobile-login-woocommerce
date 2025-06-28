@@ -161,7 +161,7 @@ $sections = array(
 		'title' => 'Custom',
 		'id' 	=> 'sv_custom',
 		'tab' 	=> 'services',
-		'desc' 	=> "If your service operator isn't listed, you can manually include it. Please refer to your operator documentation",
+		'desc' 	=> "If your service operator isn't listed, you can manually include it. Please refer to your operator documentation<br>Enable debug under gemeral tab to see the response from SMS operator.",
 	),
 
 );

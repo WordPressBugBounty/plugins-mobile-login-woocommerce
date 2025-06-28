@@ -2,14 +2,14 @@
 
 class Xoo_Ml_Service{
 
-	public $id, $username, $password, $url, $authToken;
+	public $id, $username, $password, $url, $authToken, $format;
 
 	public $hasSDK = false; //Needs PHP SDK to run
 
 	public $notsetupError;
 
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 	}
 
@@ -28,12 +28,16 @@ class Xoo_Ml_Service{
 
 		$args['headers'] = $headers;
 
+		$args 	= apply_filters( 'xoo_ml_service_http_args', $args, $this );
+		$url 	= apply_filters( 'xoo_ml_service_http_url', $this->url, $this );
 
-		$response = wp_remote_post(
-			apply_filters( 'xoo_ml_service_http_url', $this->url, $this ),
-			apply_filters( 'xoo_ml_service_http_args', $args, $this )
-		);
+		if( $this->format === 'json' ){
+			$args['headers']['Content-Type'] = 'application/json';
+			$args['body'] = json_encode( $args['body'] );
+	    }
 
+
+		$response = wp_remote_post( $url, $args );
 
 		if( is_wp_error( $response ) ){
 			return $response;

@@ -16,7 +16,7 @@ class Xoo_Ml_Service_Bulkssms extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->user, $this->key, $this->senderid ) );
 

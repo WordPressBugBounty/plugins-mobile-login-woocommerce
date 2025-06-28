@@ -403,7 +403,6 @@ $settings = array(
 		'desc' 			=> 'For eg: https://api.textlocal.in/send/'
 	),
 
-
 	array(
 		'type' 			=> 'setting',
 		'callback' 		=> 'select',
@@ -426,7 +425,7 @@ $settings = array(
 		'section_id' 	=> 'sv_custom',
 		'id' 			=> 'cus-params',
 		'title' 		=> 'API Parameters',
-		'desc' 			=> 'separated by &.<br>Shortcodes: Phone number of message recepient: [phone_number]<br>Message: [message]<br>For eg: apiKey=xxxx&senderID=yyy&numbers=[phone_number]&message=[message]<br>'
+		'desc' 			=> 'separated by &<br>For eg: apiKey=xxxx&senderID=yyy&numbers=[phone_number]&message=[message]<br>Shortcodes:<br> Phone number of message recepient: [phone_number]<br>Message: [message]'
 	),
 
 
@@ -436,7 +435,18 @@ $settings = array(
 		'section_id' 	=> 'sv_custom',
 		'id' 			=> 'cus-json',
 		'title' 		=> 'API JSON data',
-		'desc' 			=> 'Shortcodes: Phone number of message recepient: [phone_number]<br>Message: [message]<br>For eg:<br> {<br>"number": "[phone_number]",<br> "message": "[message]",<br>"senderID": "XXX"<br>}'
+		'desc' 			=> 'For eg:<br> {<br>"number": "[phone_number]",<br> "message": "[message]",<br>"senderID": "XXX"<br>}<br>Shortcodes:<br> Phone number of message recepient: [phone_number]<br>Message: [message]'
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_custom',
+		'id' 			=> 'cus-numberformat',
+		'title' 		=> 'Phone Number Format',
+		'default'		=> '+[country_code][number]',
+		'desc' 			=> 'Default: +[country_code][number]'
 	),
 
 	array(
@@ -453,7 +463,6 @@ $settings = array(
 		),
 		'default' 		=> 'POST'
 	),
-
 
 	array(
 		'type' 			=> 'setting',

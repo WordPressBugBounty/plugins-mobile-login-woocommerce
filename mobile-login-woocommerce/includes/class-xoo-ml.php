@@ -123,6 +123,11 @@ class Xoo_Ml{
 				$services['cus-json'] =  $services['cus-format'] === 'json' && !empty( $services['cus-params'] ) ? json_encode( wp_parse_args( html_entity_decode( $services['cus-params'] ) ) ) : '';
 			}
 
+			if( version_compare( $db_version, '2.6.8', '<') ){
+				$services['cus-numberformat'] = '+[country_code][number]';
+				update_option('xoo_tracking_consent_mobile-login-woocommerce', 'no' );
+			}
+
 			update_option( 'xoo-ml-services-options', $services );
 
 		}

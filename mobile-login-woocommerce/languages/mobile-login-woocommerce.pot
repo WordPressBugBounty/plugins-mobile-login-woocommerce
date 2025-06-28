@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-20 12:31+0530\n"
+"POT-Creation-Date: 2025-06-28 18:09+0530\n"
 "PO-Revision-Date: 2019-12-10 00:36+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-xoo-ml-admin-settings.php:180
+#: admin/class-xoo-ml-admin-settings.php:193
 msgid "Settings"
 msgstr ""
 
@@ -39,20 +39,23 @@ msgstr ""
 #: admin/includes/class-xoo-ml-users-table.php:99
 #: admin/includes/class-xoo-ml-users-table.php:117
 #: includes/class-xoo-ml-frontend.php:151 includes/xoo-ml-functions.php:19
-#: includes/xoo-ml-functions.php:48
+#: includes/xoo-ml-functions.php:49
 msgid "Phone"
 msgstr ""
 
 #: admin/class-xoo-ml-users-table.php:62
 #: admin/includes/class-xoo-ml-users-table.php:59
-#: templates/xoo-ml-phone-input.php:43
+#: templates/xoo-ml-phone-input.php:48
 msgid "Select Country Code"
 msgstr ""
 
 #: admin/includes/options/phone-options.php:252
-#: admin/views/settings/phone.php:202
 msgid ""
 "[otp] is your One Time Verification(OTP) to confirm your phone no at xootix."
+msgstr ""
+
+#: admin/views/settings/phone.php:327
+msgid "One time password"
 msgstr ""
 
 #: includes/class-xoo-ml-frontend.php:114
@@ -109,21 +112,21 @@ msgstr ""
 msgid "Save as a field entry"
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:110
+#: includes/class-xoo-ml-otp-handler.php:118
 msgid "Phone Number not found"
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:183
+#: includes/class-xoo-ml-otp-handler.php:191
 #, php-format
 msgid "OTP Limit reached. Please try again in %s."
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:189
+#: includes/class-xoo-ml-otp-handler.php:197
 #, php-format
 msgid "Please wait %s for a new OTP."
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:199
+#: includes/class-xoo-ml-otp-handler.php:207
 #, php-format
 msgid "Maximum number of tries exceeded. Please try again in %s."
 msgstr ""
@@ -151,8 +154,7 @@ msgid "Please login"
 msgstr ""
 
 #: includes/class-xoo-ml-verification.php:327
-#: includes/class-xoo-ml-verification.php:534
-msgid "We cannot find an account with that mobile number"
+msgid "We cannot find an account with that mobile number. Please register."
 msgstr ""
 
 #: includes/class-xoo-ml-verification.php:367
@@ -186,8 +188,16 @@ msgstr ""
 msgid "Country code cannot be empty"
 msgstr ""
 
+#: includes/class-xoo-ml-verification.php:534
+msgid "We cannot find an account with that mobile number"
+msgstr ""
+
 #: includes/class-xoo-ml-verification.php:541
 msgid "Something went wrong. Please contact site administrator."
+msgstr ""
+
+#: includes/xoo-framework/class-xoo-helper.php:354
+msgid "Some files failed to upload"
 msgstr ""
 
 #: templates/xoo-ml-external-otp-form.php:26
@@ -217,10 +227,10 @@ msgstr ""
 msgid "Login with Email & Password"
 msgstr ""
 
-#: templates/xoo-ml-phone-input.php:57
+#: templates/xoo-ml-phone-input.php:62
 msgid "Country Code"
 msgstr ""
 
-#: templates/xoo-ml-phone-input.php:69
+#: templates/xoo-ml-phone-input.php:74
 msgid "Change?"
 msgstr ""

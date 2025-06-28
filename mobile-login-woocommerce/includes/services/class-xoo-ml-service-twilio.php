@@ -21,7 +21,7 @@ class Xoo_Ml_Service_Twilio extends Xoo_Ml_Service{
 			
 	}
 
-	public function sendSMS( $phone, $message ){
+	public function sendSMS( $phone, $message, $cc, $number ){
 
 		$validate = $this->validate( array( $this->sid, $this->token, $this->senderNumber ) );
 
@@ -78,7 +78,7 @@ class Xoo_Ml_Service_Twilio extends Xoo_Ml_Service{
 
 		    	$whatsappArgs = array(		
 			 		'body' => array(
-			 			'From' 		=> 'whatsapp:'.$this->senderNumber,
+			 			'From' 		=> 'whatsapp:'.$this->whatsappnumber,
 			 			'To' 		=> 'whatsapp:'.$phone,
 			 			'Body' 		=> $message
 			 		)

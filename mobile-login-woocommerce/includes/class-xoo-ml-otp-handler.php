@@ -42,14 +42,22 @@ class Xoo_Ml_Otp_Handler{
 			return new Wp_Error( 'no-operator', 'Operator not found. Please download operator SDK from the plugin settings. Check documentation for how to setup.' );
 		}
 
+		//Remove 0
+		if( strrpos( $phone_no , 0 ) === 0 ){
+			$phone_no = substr( $phone_no, 1); 
+		}
+
 		$otp =  self::generate_otp_digits();
 
-		$otpSent = $operator->sendSMS( $phone_code.$phone_no, self::getOTPSMSText( $otp ) );
+		$smsParams = apply_filters( 'xoo_ml_sms_send_params', array( $phone_code, $phone_no, self::getOTPSMSText( $otp ) ) );
+
+		$otpSent = $operator->sendSMS( $smsParams[0].$smsParams[1], $smsParams[2], $smsParams[0], $smsParams[1] );
 		//$otpSent = true;
 
 		if( is_wp_error( $otpSent ) ){
 			return $otpSent;
 		}
+
 
 		return $otp;
 	}
