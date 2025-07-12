@@ -51,6 +51,29 @@ class Xoo_Ml_Admin_Settings{
 		add_action( 'admin_head', array( $this, 'customCSS' ) );
 
 		add_filter( 'pre_update_option', array( $this, 'fetch_sdks_on_save' ), 10, 3 );
+
+		add_action( 'xoo_as_setting_sidebar_mobile-login-woocommerce', array( $this, 'sidebar_html' ) );
+	}
+
+
+	public function sidebar_html(){
+		?>
+
+		
+
+		<ol>
+			<?php if( get_option( 'woocommerce_enable_myaccount_registration' ) !== "yes" ): ?>
+				<li class="xoo-as-info-warning"><b>Account creation on my account page</b> is disabled under woocommerce settings. You will not be able to register and login users with OTP. <a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=account' ) ?>">Please enable</a></li>
+			<?php endif; ?>
+			<?php if( !class_exists('woocommerce') ): ?>
+				<li class="xoo-as-info-warning">The free version works only with woocommerce login/registration forms. You do not have woocommerce installed.</li>
+			<?php else: ?>
+				<li><code>[woocommerce_my_account]</code> shortcode to display login and register forms or visit <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ) ?>">my account page </a>  without being signed in.</li>
+			<?php endif; ?>
+			<li>To start sending SMS messages, please setup one of the SMS operator services. <a href="https://docs.xootix.com/mobile-login-for-woocommerce/">Documentation</a></li>
+		</ol>
+
+		<?php
 	}
 
 

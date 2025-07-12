@@ -36,8 +36,9 @@ class Xoo_Ml_Helper extends Xoo_Helper{
 
 function xoo_ml_helper(){
 	return Xoo_Ml_Helper::get_instance( 'mobile-login-woocommerce', XOO_ML_PATH, array(
-		'pluginFile' => XOO_ML_PLUGIN_FILE,
-		'pluginName' => 'OTP Login Woocommerce'
+		'pluginFile' 	=> XOO_ML_PLUGIN_FILE,
+		'pluginName' 	=> 'OTP Login Woocommerce',
+		'sidebar' 		=> true
 	) );
 }
 xoo_ml_helper();

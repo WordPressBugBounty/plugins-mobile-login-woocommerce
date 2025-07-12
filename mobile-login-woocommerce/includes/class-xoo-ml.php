@@ -105,7 +105,7 @@ class Xoo_Ml{
 
 		//If first time installed
 		if( !$db_version ){
-			
+			update_option('woocommerce_enable_myaccount_registration', 'yes');
 		}
 
 		if( $db_version ){

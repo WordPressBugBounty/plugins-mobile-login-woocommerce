@@ -67,7 +67,7 @@ class Xoo_Ml_Phone_Frontend{
 		wp_enqueue_style( 'dashicons' );
 
 		if( !wp_style_is( 'select2' ) ){
-			wp_enqueue_style( 'xoo-ml-style', XOO_ML_URL.'/library/select2/select2.css', array(), XOO_ML_VERSION );
+			wp_enqueue_style( 'xoo-ml-style-select', XOO_ML_URL.'/library/select2/select2.css', array(), XOO_ML_VERSION );
 		}
 
 		wp_enqueue_style( 'xoo-ml-style', XOO_ML_URL.'/assets/css/xoo-ml-style.css', array(), XOO_ML_VERSION );

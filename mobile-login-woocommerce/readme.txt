@@ -5,7 +5,7 @@ Tags: woocommerce, sms, login, phone, register
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
 Tested up to: 6.8
-Stable tag: 2.6.8
+Stable tag: 2.6.9
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,11 @@ Copy the template file to your theme->templates folder and make the desired chan
 = 1.0 =
 
 == Changelog ==
+
+= 2.6.9 =
+* Woodmart theme compatibility
+* Minor fixes
+* Settings UI update
 
 = 2.6.8 =
 * Custom SMS operator settings fix

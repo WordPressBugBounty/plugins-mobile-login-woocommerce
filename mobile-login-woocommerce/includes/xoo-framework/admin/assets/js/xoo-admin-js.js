@@ -405,11 +405,12 @@ jQuery(document).ready(function($){
 
 		if( $form.innerWidth() <= 700 ){
 			$form.addClass('xoo-as-break');
+			$('.xoo-as-sidebar').addClass('xoo-as-sbar-collapsed');
 		}
 		else{
 			$form.removeClass('xoo-as-break');
 		}
-	}).trigger('change');
+	}).trigger('resize');
 
 	$('img.xoo-as-patimg').on('click', function(){
 
@@ -449,5 +450,16 @@ jQuery(document).ready(function($){
 			$('.xoo-as-info').hide();
 		}
 	);
+
+
+
+	$('.xoo-as-sbar-close').on( 'click', function(){
+		$('.xoo-as-sidebar').toggleClass('xoo-as-sbar-collapsed');
+	} );
+
+	$('.xoo-as-sidebar').css({
+		'margin-top': $('.xoo-sc-tabs').outerHeight(),
+		'top': $('#wpadminbar').outerHeight() + 10
+	}); 
 
 })

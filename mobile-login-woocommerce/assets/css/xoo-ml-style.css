@@ -369,7 +369,27 @@ select.xoo-ml-phone-cc + .select2.select2-container {
     margin-bottom: 10px;
 }
 
+
+
 /* RTL */
 body.rtl .xoo-ml-otp-input-cont, body.rtl .xoo-ml-otp-sent-txt, body.rtl .xoo-ml-phinput-cont, body.rtl input[name="xoo-ml-reg-phone"], body.rtl .xoo-ml-reg-phone-cc_cont {
     direction: ltr;
 }
+
+/* woodmart theme compatibility */
+.wd-registration-page.active-register form.register {
+    display: block!important;
+}
+
+.woocommerce-account #customer_login:has(form.xoo-lwo-form[style="display: none;"]) form.login {
+    display: block!important;
+}
+
+.woocommerce-account form.login.woocommerce-form-login {
+    display: none!important;
+}
+
+.wd-dropdown form.xoo-lwo-form, .wd-dropdown button.xoo-ml-open-lwo-btn, .wd-dropdown .xoo-ml-or {
+    display: none!important;
+}
+
