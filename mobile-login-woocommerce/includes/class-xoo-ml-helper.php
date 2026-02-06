@@ -4,7 +4,18 @@ class Xoo_Ml_Helper extends Xoo_Helper{
 
 	protected static $_instance = null;
 
+	public $whatsapp_enabled;
+
+	public $sms_enabled;
+
 	public $mergeCC;
+
+	public function __construct(...$args){
+		parent::__construct(...$args);
+		$this->whatsapp_enabled = $this->get_phone_option('m-sms-channels') !== 'sms';
+		$this->sms_enabled 		= $this->get_phone_option('m-sms-channels') !== 'whatsapp';
+	}
+
 
 	public static function get_instance( $slug, $path, $helperArgs = array() ){
 		if ( is_null( self::$_instance ) ) {

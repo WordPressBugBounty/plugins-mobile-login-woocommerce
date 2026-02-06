@@ -4,7 +4,7 @@ use Twilio\Rest\Client;
 
 class Xoo_Ml_Service_Twilio extends Xoo_Ml_Service{
 
-	public $sid, $token, $senderNumber;
+	public $sid, $token, $senderNumber, $whatsappnumber;
 
 	public function __construct(){
 

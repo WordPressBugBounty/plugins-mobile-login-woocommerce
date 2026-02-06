@@ -43,6 +43,8 @@ class Xoo_Ml_Admin_Settings{
 
 		add_filter( 'xoo_admin_setting_field_callback_html', array( $this, 'operator_documentation_links_html' ), 10, 4 );
 
+		add_filter( 'xoo_admin_setting_field_callback_html', array( $this, 'whatsapp_number_fetch' ), 10, 4 );
+
 
 		if( current_user_can( 'manage_options' ) ){
 			add_action( 'admin_init', array( $this, 'check_sdks' ) );
@@ -53,6 +55,9 @@ class Xoo_Ml_Admin_Settings{
 		add_filter( 'pre_update_option', array( $this, 'fetch_sdks_on_save' ), 10, 3 );
 
 		add_action( 'xoo_as_setting_sidebar_mobile-login-woocommerce', array( $this, 'sidebar_html' ) );
+
+		add_action( 'wp_ajax_xoo_ml_admin_whatsapp_fetch', array( $this, 'whatsapp_fetch' ) );
+		add_action( 'wp_ajax_xoo_ml_admin_whatsapp_register', array( $this, 'whatsapp_register' ) );
 	}
 
 
@@ -74,6 +79,116 @@ class Xoo_Ml_Admin_Settings{
 		</ol>
 
 		<?php
+	}
+
+	public function whatsapp_register(){
+
+		try {
+
+			$token 		= sanitize_text_field( $_POST['token'] );
+			$waba_id 	= sanitize_text_field( $_POST['waba_id'] );
+			$phone_id 	= sanitize_text_field( trim( $_POST['phone_id'] ) );
+			$pin 		= sanitize_text_field( trim( $_POST['pin'] ) );
+
+			$register_url = "https://graph.facebook.com/v24.0/{$phone_id}/register";
+
+			$response = wp_remote_post( $register_url, array(
+			    'timeout' => 20,
+			    'headers' => array(
+			        'Authorization' => "Bearer {$token}",
+			        'Content-Type'  => 'application/json'
+			    ),
+			    'body' => wp_json_encode(array(
+			        'messaging_product' => 'whatsapp',
+			        'pin'               => $pin
+			    ))
+			) );
+
+			$body      = wp_remote_retrieve_body( $response );
+			$json      = json_decode( $body, true );
+
+			if( !isset( $json['success'] ) ){
+				throw new Xoo_Exception( $body );	
+			}
+
+			wp_send_json( array(
+				'success' 	=> 1,
+				'message' 	=> xoo_ml_add_notice( 'Phone number registered succesfully', 'success' )
+			) );
+			
+		} catch (Exception $e) {
+			wp_send_json( array(
+				'error' => 1,
+				'message' => xoo_ml_add_notice( $e->getMessage(), 'error' )
+			) );
+		}
+	}
+
+
+	public function whatsapp_fetch(){
+
+		try {
+
+			$token 		= sanitize_text_field( $_POST['token'] );
+			$waba_id 	= sanitize_text_field( $_POST['waba_id'] );
+			$phone_no 	= sanitize_text_field( trim( $_POST['phone_no'] ) );
+
+			$fetch_numbers_url = "https://graph.facebook.com/v24.0/{$waba_id}/phone_numbers";
+
+			$response = wp_remote_get( $fetch_numbers_url, array(
+				'headers' => array(
+					'Authorization' => "Bearer {$token}"
+				)
+			) );
+
+			$body = json_decode( $response['body'], true );
+
+			if( !isset( $body['data'] ) ){
+				throw new Exception( $response['body'] );
+			}
+
+			$number_found = $request_ok = $number_id = false;
+
+			foreach ( $body['data'] as $index => $number_data ) {
+
+				if( isset( $number_data['display_phone_number'] ) ){
+
+					$request_ok = true; // number data exists
+
+					if( $number_data['display_phone_number'] == $phone_no ){
+						$number_found = true;
+						$number_id = $number_data['id'];
+					}
+
+				}
+
+			}
+
+			if( !$request_ok ){
+				throw new Exception( $response['body'] );
+			}
+
+			if( !$number_found ){
+				throw new Exception( 'Provided number not found in your whatsapp account' );
+			}
+
+			wp_send_json( array(
+				'success' 	=> 1,
+				'number_id' => $number_id,
+				'message' 	=> xoo_ml_add_notice( 'Phone number ID fetched succesfully. Please enter the PIN and register your phone number.', 'success' )
+			) );
+
+			
+		} catch (Exception $e) {
+			wp_send_json( array(
+				'error' => 1,
+				'message' =>xoo_ml_add_notice( $e->getMessage(), 'error' )
+			) );
+		}
+
+		
+		exit;
+
 	}
 
 
@@ -174,13 +289,9 @@ class Xoo_Ml_Admin_Settings{
 
 		if( $slug !== 'mobile-login-woocommerce' ) return;
 
-		if( !wp_style_is( 'select2' ) ){
-			wp_enqueue_style( 'select2', XOO_ML_URL.'/library/select2/select2.css');
-		}
-
-		if( !wp_script_is( 'select2' ) ){
-			wp_enqueue_script( 'select2', XOO_ML_URL.'/library/select2/select2.js', array('jquery'), XOO_ML_VERSION, true); // Main JS
-		}
+		wp_enqueue_style( 'xoo-ml-select2', XOO_ML_URL.'/assets/select2/select2.css');
+		
+		wp_enqueue_script( 'xoo-ml-select2', XOO_ML_URL.'/assets/select2/select2.js', array('jquery'), XOO_ML_VERSION, true); // Main JS
 
 		wp_enqueue_style( 'xoo-ml-flags', XOO_ML_URL.'/countries/flags.css', array(), XOO_ML_VERSION );
 
@@ -218,6 +329,29 @@ class Xoo_Ml_Admin_Settings{
 		);
 
 		return array_merge( $action_links, $links );
+	}
+
+	public function whatsapp_number_fetch( $field, $field_id, $value, $args ){
+
+		if( $field_id !== 'xoo-ml-services-options[whatsapp-phoneid]' ) return $field;
+
+		$html = '';
+
+		ob_start();
+
+		?>
+
+		<span class="xoo-admin-ml-verifyno xoo-admin-ml-link">Fetch ID</span>
+		<div class="xoo-admin-ml-register">
+			<input type="number" placeholder="Enter 6 digit pin">
+			<span class="xoo-admin-ml-link">Register Number</span>
+		</div>
+
+		<?php
+		$html .= ob_get_clean();
+
+		return $field.$html;
+
 	}
 
 

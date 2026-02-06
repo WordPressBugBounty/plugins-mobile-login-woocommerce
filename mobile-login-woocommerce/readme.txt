@@ -1,11 +1,11 @@
-=== OTP Login Woocommerce (Login with OTP)===
+=== OTP Login & Register Woocommerce ===
 Contributors: xootix, xootixsupport
 Donate link: https://www.paypal.me/xootix
-Tags: woocommerce, sms, login, phone, register
+Tags: login with otp, one time password, 2fa, woocommerce login
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
-Tested up to: 6.8
-Stable tag: 2.6.9
+Tested up to: 6.9
+Stable tag: 2.7.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,9 @@ Copy the template file to your theme->templates folder and make the desired chan
 = 1.0 =
 
 == Changelog ==
+
+= 2.7.0 =
+* Whatsapp support 
 
 = 2.6.9 =
 * Woodmart theme compatibility

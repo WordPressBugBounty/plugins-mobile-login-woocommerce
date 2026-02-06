@@ -7,6 +7,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 $settings = array(
 
 	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_whatsapp',
+		'id' 			=> 'whatsapp-token',
+		'title' 		=> 'Bearer Token',
+	),
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_whatsapp',
+		'id' 			=> 'whatsapp-businessid',
+		'title' 		=> 'WABA ID',
+		'desc' 			=> 'Whatsapp Business Account ID'
+	),
+
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_whatsapp',
+		'id' 			=> 'whatsapp-phoneno',
+		'title' 		=> 'Phone Number',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_whatsapp',
+		'id' 			=> 'whatsapp-phoneid',
+		'title' 		=> 'Phone Number ID',
+	),
+
+
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_whatsapp',
+		'id' 			=> 'whatsapp-template',
+		'title' 		=> 'Template',
+	),
+
+	array(
+		'type' 			=> 'setting',
+		'callback' 		=> 'text',
+		'section_id' 	=> 'sv_whatsapp',
+		'id' 			=> 'whatsapp-language',
+		'title' 		=> 'Language Code',
+		'default' 		=> 'en_US'
+	),
+
+	array(
 		'callback' 		=> 'upload',
 		'title' 		=> 'PHP SDK',
 		'id' 			=> 'twilio-phpsdk',

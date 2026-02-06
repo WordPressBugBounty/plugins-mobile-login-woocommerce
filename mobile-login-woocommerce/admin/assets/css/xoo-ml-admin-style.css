@@ -210,3 +210,69 @@ ul.xoo-wscp-features li {
 .xoo-settings-container[active-tab="pro"] .xoo-sc-bottom-btns {
     display: none;
 }
+
+
+.xoo-as-setting.xoo-as-radio .xoo-as-field {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+span.xoo-admin-ml-link{
+    text-decoration: underline;
+    color: #3858e9;
+    font-weight: 600;
+    font-style: normal;
+    cursor: pointer;
+}
+
+.xoo-as-setting[data-field_id="xoo-ml-services-options[whatsapp-phoneid]"] .xoo-as-desc {
+    display: inline;
+    margin-left: 10px;
+}
+
+
+.xoo-ml-notice-error{
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.xoo-ml-notice-success{
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+
+.xoo-ml-notice-error , .xoo-ml-notice-success{
+    padding: 7px 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: block;
+    margin-top: 10px;
+}
+
+.xoo-ml-whatsapp-response {
+    display: table;
+}
+
+input[name="xoo-ml-services-options[whatsapp-phoneid]"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.xoo-admin-ml-register{
+    display: none;
+}
+
+.xoo-admin-ml-register.xoo-admin-ml-active {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.xoo-ml-processing{
+    pointer-events: none;
+    opacity: 0.5;
+}

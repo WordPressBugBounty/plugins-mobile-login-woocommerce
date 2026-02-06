@@ -232,6 +232,8 @@ class Xoo_Ml_Phone_Verification{
 				'phone_no' 	=> $data['phone_no'],
 				'phone_code'=> $data['phone_code'],
 				'error' 	=> 0,
+				'sms_sent' 	=> $data['sms_sent'],
+				'whatsapp_sent' => $data['whatsapp_sent'],
 				'notice' 	=> xoo_ml_add_notice( __( 'OTP Resent', 'mobile-login-woocommerce' ), 'success' )
 			));
 
@@ -351,11 +353,13 @@ class Xoo_Ml_Phone_Verification{
 
 			$otp = Xoo_Ml_Otp_Handler::sendOTPSMS( $phone_code, $phone_no );
 
+			$updated_phone_otp_data = Xoo_Ml_Otp_Handler::get_otp_data();
+
 			if( is_wp_error( $otp ) ){
 				throw new Xoo_Exception( $otp->get_error_message() );
 			}
 
-			do_action( 'xoo_ml_request_otp_sent', $phone_code, $phone_no, $phone_otp_data );
+			do_action( 'xoo_ml_request_otp_sent', $phone_code, $phone_no, $updated_phone_otp_data );
 
 			wp_send_json(array(
 				'otp_sent' 	=> 1,
@@ -365,6 +369,8 @@ class Xoo_Ml_Phone_Verification{
 				'phone_code'=> $phone_code,
 				'error' 	=> 0,
 				'otp_txt' 	=> sprintf( __( 'Please enter the OTP sent to <br> %s', 'mobile-login-woocommerce' ), $phone_code.$phone_no ),
+				'whatsapp_sent' => $updated_phone_otp_data['whatsapp_sent'],
+				'sms_sent' 		=> $updated_phone_otp_data['sms_sent']
 			));
 
 			
@@ -421,16 +427,23 @@ class Xoo_Ml_Phone_Verification{
 
 
 					if( isset( $_POST['firebase_error'] ) ){
-						$fb_error = json_decode ( stripslashes( $_POST['firebase_error'] ) );
 
-						if( $fb_error->code === 'auth/code-expired' ){
-							throw new Xoo_Exception( __( 'OTP Expired', 'mobile-login-woocommerce' ) );
-						}
-						elseif( $fb_error->code === 'auth/invalid-verification-code' ){
-							//do nothing
+						//Wrong OTP, also verify OTP equals to whatsapp OTP, since Firebase OTP and whatsapp OTP are different.
+						if( isset( $phone_otp_data['whatsapp_sent'] ) && $phone_otp_data['whatsapp_sent'] && ( isset( $phone_otp_data['otp'] ) && ( $phone_otp_data['otp'] == $_POST['otp'] ) )  ){
+							$firebaseVerified = true;
 						}
 						else{
-							$notice = esc_html( $fb_error->message );
+							$fb_error = json_decode ( stripslashes( $_POST['firebase_error'] ) );
+
+							if( $fb_error->code === 'auth/code-expired' ){
+								throw new Xoo_Exception( __( 'OTP Expired', 'mobile-login-woocommerce' ) );
+							}
+							elseif( $fb_error->code === 'auth/invalid-verification-code' ){
+								//do nothing
+							}
+							else{
+								$notice = esc_html( $fb_error->message );
+							}
 						}
 					}
 

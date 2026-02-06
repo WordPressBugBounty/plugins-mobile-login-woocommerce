@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
 		return xoo_ml_phone_localize.notices[ type + '_placeholder' ].replace( '%s', message );
 	}
 
-	if( xoo_ml_phone_localize.operator === 'firebase' ){
+	if( xoo_ml_phone_localize.operator === 'firebase' && window.firebase !== undefined ){
 		// Initialize Firebase
 		firebase.initializeApp(xoo_ml_phone_localize.firebase.config);
 	}
@@ -100,7 +100,7 @@ jQuery(document).ready(function($){
 
 		otpForm.$submitBtn.addClass('xoo-ml-processing');
 
-		if( xoo_ml_phone_localize.operator === 'firebase' ){
+		if( xoo_ml_phone_localize.operator === 'firebase' && otpForm.firebaseAuth ){
 
 			otpForm.firebaseAuth.confirm( otpForm.getOtpValue() ).then(function (result) {
 
@@ -368,13 +368,18 @@ jQuery(document).ready(function($){
 			data: form_data,
 			success: function(response){
 
+				let isFirebase = false;
+
 				if( xoo_ml_phone_localize.operator === 'firebase' && response.otp_sent && response.phone_code && response.phone_no ){
-					otpForm.phoneFormHandler.sendOTPUsingFirebase( response );
+					otpForm.phoneFormHandler.sendOTPUsingFirebase( response, response.whatsapp_sent );
+					isFirebase = true;
 					otpForm.$resendLink.removeClass('xoo-ml-processing');
 				}
-				else{
+
+				if( !isFirebase || response.whatsapp_sent ){
 					otpForm.phoneFormHandler.onRequestOTP( response );
 				}
+				
 				
 			}
 		});
@@ -542,10 +547,16 @@ jQuery(document).ready(function($){
 			type: 'POST',
 			data: form_data,
 			success: function(response){
+
+				let isFirebase = false;
+
 				if( xoo_ml_phone_localize.operator === 'firebase' && response.otp_sent && response.phone_code && response.phone_no ){
-					phoneForm.sendOTPUsingFirebase( response );
+					phoneForm.sendOTPUsingFirebase( response, response.whatsapp_sent );
+					isFirebase = true;
 				}
-				else{
+				
+
+				if( !isFirebase || response.whatsapp_sent ){
 					phoneForm.onRequestOTP( response );
 				}
 
@@ -579,11 +590,11 @@ jQuery(document).ready(function($){
 	}
 
 
-	PhoneForm.prototype.sendOTPUsingFirebase = function(response){
+	PhoneForm.prototype.sendOTPUsingFirebase = function(response, onRequestCalled = false){
 
 		var phoneForm 	= this;
 
-		if( xoo_ml_phone_localize.operator !== 'firebase'  ) return;
+		if( xoo_ml_phone_localize.operator !== 'firebase' || window.firebase === undefined ) return;
 
 		if( !window.recaptchaVerifier ){
 			$( '<div class="xoo-ml-recaptcha"></div>' ).insertBefore( phoneForm.$phoneForm );
@@ -604,13 +615,13 @@ jQuery(document).ready(function($){
 			// SMS sent. Prompt user to type the code from the message, then sign the
 			// user in with confirmationResult.confirm(code).
 			phoneForm.otpFormHandler.firebaseAuth = confirmationResult;
-			phoneForm.onRequestOTP(response);
+			if( !onRequestCalled ) phoneForm.onRequestOTP(response);
 		}).catch(function (error) {
 
 			// Error; SMS not sent
 			response.otp_sent 	= 0;
 			response.notice 	= error.message ? parse_notice( error.message ) : xoo_ml_phone_localize.notices.try_later;
-			phoneForm.onRequestOTP(response);
+			if( !onRequestCalled ) phoneForm.onRequestOTP(response);
 
 			console.log(error);
 
@@ -942,18 +953,28 @@ jQuery(document).ready(function($){
 
 	var ccProcessing = false;
 
-	$('.xoo-ml-phone-cc').on( 'change', function(){
+	$('.xoo-ml-phone-cc').on('change', function () {
 
-		if( ccProcessing ) return;
+	    if (ccProcessing) return;
+	    ccProcessing = true;
 
-		ccProcessing = true;
+	    var $this = $(this);
+	    var cc = $this.val();
+	    var code = $this.find(':selected').data('cc');
 
-		var cc = $(this).val();
+	    $('.xoo-ml-phone-cc').not(this).each(function () {
+	        var $el = $(this);
 
-		$('.xoo-ml-phone-cc').not(this).each( function( index, el ){
-			$(el).val(cc).trigger('change');
-		} );
-		
-		ccProcessing = false;
-	} );
+	        if (code) {
+	            $el.find('option[data-cc="' + code + '"]')
+	               .prop('selected', true);
+	        } else {
+	            $el.val(cc);
+	        }
+
+	        $el.trigger('change');
+	    });
+
+	    ccProcessing = false;
+	});
 })

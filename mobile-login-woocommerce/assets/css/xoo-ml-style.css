@@ -393,3 +393,8 @@ body.rtl .xoo-ml-otp-input-cont, body.rtl .xoo-ml-otp-sent-txt, body.rtl .xoo-ml
     display: none!important;
 }
 
+.xoo-el-notice pre {
+    background-color: transparent;
+    white-space: break-spaces;
+    padding: 0;
+}

@@ -32,16 +32,6 @@ class Xoo_Ml_Otp_Handler{
 	*/
 	public static function onlySendOTPSMS( $phone_code, $phone_no ){
 
-		if( xoo_ml_helper()->get_phone_option('m-operator') === 'firebase' ){
-			return 1; // Firebase OTP is handled by Javascript
-		}		
-
-		$operator = xoo_ml_services()->operator();
-
-		if( !$operator ){
-			return new Wp_Error( 'no-operator', 'Operator not found. Please download operator SDK from the plugin settings. Check documentation for how to setup.' );
-		}
-
 		//Remove 0
 		if( strrpos( $phone_no , 0 ) === 0 ){
 			$phone_no = substr( $phone_no, 1); 
@@ -49,17 +39,51 @@ class Xoo_Ml_Otp_Handler{
 
 		$otp =  self::generate_otp_digits();
 
-		$smsParams = apply_filters( 'xoo_ml_sms_send_params', array( $phone_code, $phone_no, self::getOTPSMSText( $otp ) ) );
+		$smsParams = apply_filters( 'xoo_ml_sms_send_params', array( $phone_code, $phone_no, self::getOTPSMSText( $otp ), $otp ) );
 
-		$otpSent = $operator->sendSMS( $smsParams[0].$smsParams[1], $smsParams[2], $smsParams[0], $smsParams[1] );
-		//$otpSent = true;
+		$smsSent = $whatsappSent = false;
 
-		if( is_wp_error( $otpSent ) ){
-			return $otpSent;
+
+		if( xoo_ml_helper()->sms_enabled && xoo_ml_helper()->get_phone_option('m-operator') !== 'firebase' ){
+
+			$sms_operator = xoo_ml_services()->operator( $phone_code );
+
+			if( $sms_operator ){
+				$smsSent = $sms_operator->sendSMS( $smsParams[0].$smsParams[1], $smsParams[2], $smsParams[0], $smsParams[1] );
+			}
+			else{
+				$smsSent = new Wp_Error( 'no-operator', 'Operator not found. Please download operator SDK from the plugin settings. Check documentation for how to setup.' );
+			}
+
+			if( is_wp_error( $smsSent ) ){
+				return $smsSent; // do not proceed to whatsapp if SMS failed.
+			}
+
 		}
 
 
-		return $otp;
+		if( xoo_ml_helper()->whatsapp_enabled ){
+			$whatsappOperator 	= xoo_ml_services()->get_whatsapp_service();
+			$whatsappSent 		= $whatsappOperator->sendSMS( $smsParams[0].$smsParams[1], $smsParams[3], $smsParams[0], $smsParams[1] );
+			if( $smsSent === false && is_wp_error($whatsappSent) ){
+				return $whatsappSent;
+			}
+		}
+
+		 if( xoo_ml_helper()->get_phone_option('m-en-debug') === 'yes' ){
+		 	if( xoo_ml_helper()->get_phone_option('m-operator') === 'firebase'  && !$whatsappSent ) return;
+		 	wp_send_json( array(
+		 		'error' => 1,
+		 		'notice' => $smsSent.$whatsappSent
+		 	) );
+		 }
+
+
+		return array(
+			'otp' 			=> $otp,
+			'smsSent' 		=> $smsSent !== false,
+			'whatsappSent' 	=> $whatsappSent !== false
+		);
 	}
 
 	/**
@@ -83,11 +107,13 @@ class Xoo_Ml_Otp_Handler{
 			$incorrect = $sent_times = 0;
 		}
 
-		$otp = self::onlySendOTPSMS( $phone_code, $phone_no );
+		$otp_sent = self::onlySendOTPSMS( $phone_code, $phone_no );
 
-		if( is_wp_error( $otp ) ){
-			return $otp;
+		if( is_wp_error( $otp_sent ) ){
+			return $otp_sent;
 		}
+
+		$otp = $otp_sent['otp'];
 
 		$sent_times++;
 
@@ -101,6 +127,8 @@ class Xoo_Ml_Otp_Handler{
 			'sent_times'	=> $sent_times,
 			'verified' 		=> false,
 			'form_token' 	=> false,
+			'whatsapp_sent' => $otp_sent['whatsappSent'],
+			'sms_sent' 		=> $otp_sent['smsSent']
 		);
 
 		self::set_otp_data( $data );

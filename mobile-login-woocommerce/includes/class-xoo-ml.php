@@ -101,6 +101,7 @@ class Xoo_Ml{
 		$version_option = 'xoo-ml-version';
 		$db_version 	= get_option( $version_option );
 
+		$phoneOptions 	= xoo_ml_helper()->get_phone_option();
 		$services 		= xoo_ml_helper()->get_service_option();
 
 		//If first time installed
@@ -128,7 +129,12 @@ class Xoo_Ml{
 				update_option('xoo_tracking_consent_mobile-login-woocommerce', 'no' );
 			}
 
+			if( version_compare( $db_version, '2.7.0', '<') ){
+				$phoneOptions['m-sms-channels'] 	= 'sms';
+			}
+
 			update_option( 'xoo-ml-services-options', $services );
+			update_option( 'xoo-ml-phone-options', $phoneOptions );
 
 		}
 

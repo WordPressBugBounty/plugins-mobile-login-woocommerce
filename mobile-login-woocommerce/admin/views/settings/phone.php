@@ -37,6 +37,29 @@ $smsOperators = array(
 $settings = array(
 
 	array(
+		'callback' 		=> 'radio',
+		'section_id' 	=> 'ph_main',
+		'id' 			=> 'm-sms-channels',
+		'title' 		=> 'Send OTP via',
+		'args' 			=> array(
+			'options' 	=> array(
+				'sms' 					=> 'SMS',
+				'whatsapp' 				=> 'Whatsapp',
+				'both' 					=> 'SMS & Whatsapp'
+			),
+			'toggleSettings' => array( //hide elements if their value is
+				'xoo-ml-phone-options[m-operator]' 			=> array( 'whatsapp' ),
+				'xoo-ml-phone-options[m-opsec-enable]' 		=> array( 'whatsapp' ),
+				'xoo-ml-phone-options[m-opsec-countries]' 	=> array( 'whatsapp' ),
+				'xoo-ml-phone-options[m-opsec-service]' 	=> array( 'whatsapp' ),
+			),
+		),
+		'default' 		=> 'both',
+		'desc' 			=> '<a href="https://docs.xootix.com/mobile-login-for-woocommerce" target="_blank" style="margin-top: -15px; display: table;">Setup SMS/Whatsapp</a>'
+	),
+
+
+	array(
 		'callback' 		=> 'select',
 		'section_id' 	=> 'ph_main',
 		'id'			=> 'm-operator',

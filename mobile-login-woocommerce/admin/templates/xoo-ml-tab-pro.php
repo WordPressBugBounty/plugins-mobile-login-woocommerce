@@ -32,13 +32,13 @@ $imgPath = XOO_ML_URL . '/admin/assets/images/pro/';
 					<li><img src="<?php echo $imgPath.'/checkout.png' ?>">Woocommerce checkout form OTP verification </li>
 				<?php endif; ?>
 
-				<li><img src="<?php echo $imgPath.'/2fa.png' ?>">Two Factor Authentication - SMS/Email</li>
+				<li><img src="<?php echo $imgPath.'/2fa.png' ?>">Two Factor Authentication - SMS, Email & Authenticator app</li>
 
 				<li><img src="<?php echo $imgPath.'/flags.png' ?>">Country Code Flags</li>
 
 				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>">Auto Read OTP on mobile browser</li>
 
-				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>">Stunning Login/Register popup & inline forms, fully customizable. This is a separate plugin, feel free to download. <a href="https://wordpress.org/plugins/easy-login-woocommerce/" target="_blank">Download</a></li>
+				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>">Stunning login and register popups with inline forms, fully customizable. Available as a separate plugin <a href="https://wordpress.org/plugins/easy-login-woocommerce/" target="_blank">Download</a></li>
 
 			</ul>
 

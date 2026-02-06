@@ -1,14 +1,14 @@
 <?php
 /**
-* Plugin Name: OTP Login/Signup Woocommerce
+* Plugin Name: OTP Login & Register Woocommerce
 * Plugin URI: http://xootix.com/mobile-login-woocommerce
 * Author: XootiX
-* Version: 2.6.9
+* Version: 2.7.0
 * Text Domain: mobile-login-woocommerce
 * Domain Path: /languages
 * Author URI: http://xootix.com
 * Description: Allow users to login with OTP ( sent on their phone ) therefore removing the need to remember a password.
-* Tags: woocommerce, sms login, sms, phone
+* Tags: otp login, one time password, 2fa, woocommerce login
 */
 
 
@@ -21,7 +21,7 @@ define("XOO_ML_PATH",plugin_dir_path(__FILE__)); // Plugin path
 define( 'XOO_ML_PLUGIN_FILE', __FILE__ );
 define("XOO_ML_URL",plugins_url('',__FILE__)); // plugin url
 define("XOO_ML_PLUGIN_BASENAME",plugin_basename( __FILE__ ));
-define("XOO_ML_VERSION","2.6.9"); //Plugin version
+define("XOO_ML_VERSION","2.7.0"); //Plugin version
 
 /**
  * Initialize

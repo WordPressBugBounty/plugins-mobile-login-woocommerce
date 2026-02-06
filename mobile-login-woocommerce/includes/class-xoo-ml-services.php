@@ -8,6 +8,8 @@ class Xoo_Ml_Services{
 
 	public $activeOperator;
 
+	public $wa_service;
+
 	public $operators = array();
 
 	public static $sdkDir;
@@ -41,9 +43,30 @@ class Xoo_Ml_Services{
 		return $this->activeServiceObj;
 	}
 
+	public function get_whatsapp_service() {
+
+		if ( ! $this->wa_service ) {
+
+			$operatorData = $this->get_operator_data( 'whatsapp' );
+
+			require_once XOO_ML_PATH.'/includes/services/class-xoo-ml-service.php';
+
+			$this->wa_service = require_once $operatorData['service'];
+
+		}
+
+		return $this->wa_service;
+	}
+
 	public function set_operators_data(){
 
 		$operators = array(
+			'whatsapp' 	=> array(
+				'title' 	=> 'WhatsApp',
+				'desc' 		=> '',
+				'service' 	=> XOO_ML_PATH.'/includes/services/class-xoo-ml-service-whatsapp.php',
+				'doc' 		=> 'http://docs.xootix.com/mobile-login-for-woocommerce/whatsapp/'
+			),
 			'twilio' => array(
 				'title' 	=> 'Twilio',
 				'doc' 		=> 'http://docs.xootix.com/mobile-login-for-woocommerce/twilio/',

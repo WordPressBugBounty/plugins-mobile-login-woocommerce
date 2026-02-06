@@ -359,21 +359,48 @@ class Xoo_Admin{
 					$sanitized = true;
 				}
 
+
+				if( isset( $setting['args']['group'] ) ){
+
+					$group = $setting['args']['group'];
+
+					if( $group === 'email_content' ){
+						$value = xoo_wp_kses_email( $value );
+						$sanitized = true;
+					}
+
+				}
+
+
+				if( isset( $setting['args']['sanitize'] ) && function_exists( $setting['args']['sanitize'] ) ){
+					$value 		= call_user_func( $setting['args']['sanitize'], $value );
+					$sanitized 	= true;
+				}
+
 				
 				if( !$sanitized ){
 					
 					switch ( $setting['callback'] ) {
 						case 'textarea':
 							$value = xoo_clean( $value, 'wp_kses_post' );
+							break;
+
+						case 'wp_editor':
+							$value = wp_kses_post( $value );
+							break;
 						
 						default:
 							$value = xoo_clean($value);
 							break;
 					}
 
+					$sanitized = true;
+
 				}
 
+
 				$option_data[ $setting_id ] = $value;
+
 
 			}
 
@@ -397,8 +424,8 @@ class Xoo_Admin{
 		wp_enqueue_media(); // media gallery
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_style( 'xoo-admin-style', XOO_FW_URL . '/admin/assets/css/xoo-admin-style.css', array(), XOO_FW_VERSION, 'all' );
-		wp_enqueue_script( 'xoo-admin-js', XOO_FW_URL . '/admin/assets/js/xoo-admin-js.js', array( 'jquery','wp-color-picker'), XOO_FW_VERSION, false );
-		wp_enqueue_script( 'jquery-ui-sortable' );
+		wp_enqueue_script( 'xoo-admin-js', XOO_FW_URL . '/admin/assets/js/xoo-admin-js.js', array( 'jquery','wp-color-picker', 'jquery-ui-sortable' ), XOO_FW_VERSION, false );
+		
 
 		wp_localize_script( 'xoo-admin-js', 'xoo_admin_params', array(
 			'adminurl'  => admin_url().'admin-ajax.php',
@@ -819,7 +846,6 @@ class Xoo_Admin{
 			$container_class[] = 'xoo-as-select2box';
 		}
 
-
 		$custom_attributes_html = array();
 
 		if ( ! empty( $custom_attributes ) && is_array( $custom_attributes ) ) {
@@ -848,11 +874,42 @@ class Xoo_Admin{
 		) );
 
 
+		if( $callback === 'wp_editor' ){
 
-		$field_container = '<div class="%1$s" data-setting="%3$s" data-field_id="'.$field_id.'">%2$s</div>';
+			$editor_settings 	= isset( $args['editor_settings'] ) ? $args['editor_settings'] : array();
+			$editor_settings 	= xoo_recursive_parse_args( $editor_settings, array(
+				'textarea_name' => $field_id,
+				'wpautop' 		=> false
+			) );
+
+			if( isset( $args['group'] ) && $args['group'] === 'email_content' ){
+				$editor_settings = xoo_recursive_parse_args( $editor_settings, array(
+					'teeny'         => false,
+					'tinymce'       => array(
+						'toolbar1' 					=> 'formatselect,bold,italic,underline,forecolor,backcolor,alignleft,aligncenter,alignright,undo,redo,removeformat,code,hr',
+						'forced_root_block' 		=> 'p',
+	            		'init_instance_callback' 	=> 'function(editor) {
+			                editor.settings.forced_root_block_attrs = { style: "margin:0 0 16px 0;" };
+			            }',
+					)
+				));
+			}
+		}
+
+
+		
+		$toggleDataHTML = isset( $args['toggleSettings'] )  ? "data-togglesettings=".esc_attr( wp_json_encode( $args['toggleSettings'] ) ) : '';
+
+		$field_container = '<div class="%1$s" data-setting="%3$s" data-field_id="'.$field_id.'" '.$toggleDataHTML.'>%2$s</div>';
 
 		$field = '';
 		switch ( $callback ) {
+
+			case 'wp_editor':
+				ob_start();
+				wp_editor( $value, sanitize_title_with_dashes( $field_id ), $editor_settings );
+				$field .=  ob_get_clean();
+				break;
 
 			case 'text':
 			case 'number':
@@ -1058,8 +1115,25 @@ class Xoo_Admin{
 
 		$field = apply_filters( 'xoo_admin_setting_field_callback_html', $field, $field_id, $value, $args );
 
+		if( isset( $args['value_desc'] ) && !empty( $args['value_desc'] ) ){
+			$defaultValueDesc = isset( $args['value_desc'][$value] ) ? $args['value_desc'][$value] : '';
+			$field .= '<div class="xoo-as-val-desc" data-desc="'.esc_attr( wp_json_encode( $args['value_desc'] ) ).'">'.$defaultValueDesc.'</div>';
+		}
+
 		if( $desc ){
 			$field .= '<span class="xoo-as-desc">'.$desc.'</span>';
+		}
+
+		if( isset( $args['placeholders'] ) && !empty( $args['placeholders'] ) ){
+			$field .= '<div class="xoo-as-placeholders">';
+			$field .= '<span>Placeholders</span>';
+			$field .= '<ul>';
+			foreach ($args['placeholders'] as $placeholder_code => $placeholder_title ) {
+				$field .= '<li><span>'.$placeholder_code.' :</span><span>'.$placeholder_title.'</span></li>';
+			}
+			$field .= '</ul>';
+			$field .= '</div>';
+			
 		}
 
 		$label = '<div class="xoo-as-label">'.$title.'</div>';

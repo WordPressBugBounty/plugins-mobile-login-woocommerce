@@ -49,7 +49,7 @@ if( $cc_show === 'yes' && $merge_cc ){
 
 					<?php foreach( $cc_list as $country_code => $country_phone_code ): ?>
 
-						<option value="<?php echo esc_attr( $country_phone_code ); ?>" <?php echo $country_phone_code === $default_cc ? 'selected' : ''; ?> ><?php echo esc_attr( $country_code.' '.$country_phone_code ); ?></option>
+						<option value="<?php echo esc_attr( $country_phone_code ); ?>" <?php echo $country_phone_code === $default_cc ? 'selected' : ''; ?> data-cc="<?php echo $country_code ?>"><?php echo esc_attr( $country_code.' '.$country_phone_code ); ?></option>
 
 					<?php endforeach; ?>
 

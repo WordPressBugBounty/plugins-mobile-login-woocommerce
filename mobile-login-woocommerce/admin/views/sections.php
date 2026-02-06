@@ -58,6 +58,14 @@ $sections = array(
 
 
 	array(
+		'title' => 'Whatsapp Settings',
+		'id' 	=> 'sv_whatsapp',
+		'tab' 	=> 'services',
+		'desc' 	=> '<a href="https://docs.xootix.com/mobile-login-for-woocommerce/whatsapp/" target="_blank">Documentation</a>'
+	),
+
+
+	array(
 		'title' => 'Firebase Settings',
 		'id' 	=> 'sv_firebase',
 		'tab' 	=> 'services',

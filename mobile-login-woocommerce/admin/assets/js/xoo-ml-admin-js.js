@@ -83,6 +83,121 @@ jQuery(document).ready(function($){
 	} ).trigger('change');
 
 
+	$('.xoo-admin-ml-verifyno').on( 'click', function(){
+
+		let waba_id 	= $('input[name="xoo-ml-services-options[whatsapp-businessid]"]').val();
+		let phone_no 	= $('input[name="xoo-ml-services-options[whatsapp-phoneno]"]').val();
+		let token 		= $('input[name="xoo-ml-services-options[whatsapp-token]"]').val();
+
+		if( !waba_id || !phone_no || !token ){
+			alert('WABA ID, phone number & Bearer Token cannot be empty.');
+			return;
+		}
+
+		let $number_id 		= $('input[name="xoo-ml-services-options[whatsapp-phoneid]"]');
+		let $container 		= $(this).closest('.xoo-as-field');
+
+		let $button  	= $(this);
+		let before_text = $(this).text();
+
+		$button.text( 'Fetching....' ).addClass('xoo-ml-processing');
+
+		if( !$container.find('.xoo-ml-whatsapp-response').length ){
+			$container.append('<div class="xoo-ml-whatsapp-response"></div>');
+		}
+
+		let $response_cont = $container.find('.xoo-ml-whatsapp-response');
+
+		var data = {
+			'waba_id': waba_id,
+			'phone_no': phone_no,
+			'token': token,
+			'action': 'xoo_ml_admin_whatsapp_fetch',
+		}
+
+		$.ajax({
+			url: xoo_ml_admin_localize.adminurl,
+			type: 'POST',
+			data: data,
+			success: function(response){
+
+				$button.text(before_text).removeClass('xoo-ml-processing');
+
+				if( response.number_id ){
+					$number_id.val(response.number_id);
+				}
+
+				if( response.message ){
+					$response_cont.html( response.message );
+				}
+
+				if( response.success ){
+					$button.hide();
+					$('.xoo-admin-ml-register').addClass('xoo-admin-ml-active');
+				}
+
+			}
+		});
+
+
+	} );
+
+
+	$('.xoo-admin-ml-register .xoo-admin-ml-link').on( 'click', function(){
+
+		let waba_id 	= $('input[name="xoo-ml-services-options[whatsapp-businessid]"]').val();
+		let phone_id 	= $('input[name="xoo-ml-services-options[whatsapp-phoneid]"]').val();
+		let token 		= $('input[name="xoo-ml-services-options[whatsapp-token]"]').val();
+		let pin 		= $(this).siblings('input').val();
+
+		if( !waba_id || !phone_id || !token || !pin ){
+			alert('WABA ID, phone ID, pin & Bearer Token cannot be empty.');
+			return;
+		}
+
+		let $fieldContainer = $(this).closest('.xoo-as-field');
+
+		let $button  	= $(this);
+		let before_text = $(this).text();
+
+		$button.text( 'Please wait....' ).addClass('xoo-ml-processing');;
+
+		let $response_cont = $fieldContainer.find('.xoo-ml-whatsapp-response');
+
+		$response_cont.html('');
+
+		var data = {
+			'waba_id': waba_id,
+			'phone_id': phone_id,
+			'token': token,
+			'pin': pin,
+			'action': 'xoo_ml_admin_whatsapp_register',
+		}
+
+		$.ajax({
+			url: xoo_ml_admin_localize.adminurl,
+			type: 'POST',
+			data: data,
+			success: function(response){
+
+				$button.text(before_text).removeClass('xoo-ml-processing');;
+
+				if( response.success ){
+					$response_cont.html( response.message );
+					$fieldContainer.find('.xoo-admin-ml-register').removeClass('xoo-admin-ml-active');
+				}
+
+				if( response.message ){
+					$response_cont.html( response.message );
+				}
+
+			}
+		});
+
+
+	} );
+
+
 
 
 
