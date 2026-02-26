@@ -54,7 +54,7 @@ $settings = array(
 				'xoo-ml-phone-options[m-opsec-service]' 	=> array( 'whatsapp' ),
 			),
 		),
-		'default' 		=> 'both',
+		'default' 		=> 'sms',
 		'desc' 			=> '<a href="https://docs.xootix.com/mobile-login-for-woocommerce" target="_blank" style="margin-top: -15px; display: table;">Setup SMS/Whatsapp</a>'
 	),
 

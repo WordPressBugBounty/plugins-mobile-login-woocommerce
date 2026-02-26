@@ -5,7 +5,7 @@ Tags: login with otp, one time password, 2fa, woocommerce login
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
 Tested up to: 6.9
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,9 @@ Copy the template file to your theme->templates folder and make the desired chan
 = 1.0 =
 
 == Changelog ==
+
+= 2.7.1 =
+* Setting update
 
 = 2.7.0 =
 * Whatsapp support 
