@@ -41,7 +41,7 @@ class Xoo_Ml_Phone_Frontend{
 
 
 		add_action( 'wp_enqueue_scripts' ,array( $this,'enqueue_styles' ) );
-		add_action( 'wp_enqueue_scripts' , array( $this,'enqueue_scripts' ), 0 );
+		add_action( 'wp_enqueue_scripts' , array( $this,'enqueue_scripts' ) );
 		
 	}
 
@@ -71,7 +71,7 @@ class Xoo_Ml_Phone_Frontend{
 			if ( wp_style_is( 'wc-select2', 'registered' ) ) {
 			    wp_enqueue_style( 'wc-select2' );
 			} else {
-		        wp_enqueue_style( 'xoo-ml-select2', XOO_ML_URL . '/assets/select2/select2.css', array(), XOO_ML_VERSION );
+		        wp_enqueue_style( 'xoo-ml-select2', XOO_ML_URL . '/library/select2/select2.css', array(), XOO_ML_VERSION );
 			}
 
 		}
@@ -97,7 +97,7 @@ class Xoo_Ml_Phone_Frontend{
 			if ( wp_script_is( 'wc-select2', 'registered' ) ) {
 			    wp_enqueue_script( 'wc-select2' );
 			} else {
-		        wp_enqueue_script( 'xoo-ml-select2',  XOO_ML_URL . '/assets/select2/select2.js', array( 'jquery' ), XOO_ML_VERSION, $strategy );
+		        wp_enqueue_script( 'xoo-ml-select2',  XOO_ML_URL . '/library/select2/select2.js', array( 'jquery' ), XOO_ML_VERSION, $strategy );
 			}
 		}
 

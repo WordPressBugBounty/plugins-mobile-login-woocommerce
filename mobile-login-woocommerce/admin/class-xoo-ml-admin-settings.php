@@ -289,9 +289,9 @@ class Xoo_Ml_Admin_Settings{
 
 		if( $slug !== 'mobile-login-woocommerce' ) return;
 
-		wp_enqueue_style( 'xoo-ml-select2', XOO_ML_URL.'/assets/select2/select2.css');
+		wp_enqueue_style( 'xoo-ml-select2', XOO_ML_URL.'/library/select2/select2.css');
 		
-		wp_enqueue_script( 'xoo-ml-select2', XOO_ML_URL.'/assets/select2/select2.js', array('jquery'), XOO_ML_VERSION, true); // Main JS
+		wp_enqueue_script( 'xoo-ml-select2', XOO_ML_URL.'/library/select2/select2.js', array('jquery'), XOO_ML_VERSION, true); // Main JS
 
 		wp_enqueue_style( 'xoo-ml-flags', XOO_ML_URL.'/countries/flags.css', array(), XOO_ML_VERSION );
 

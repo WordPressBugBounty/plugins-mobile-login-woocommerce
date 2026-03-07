@@ -3,7 +3,7 @@
 * Plugin Name: OTP Login & Register Woocommerce
 * Plugin URI: http://xootix.com/mobile-login-woocommerce
 * Author: XootiX
-* Version: 2.7.1
+* Version: 2.7.2
 * Text Domain: mobile-login-woocommerce
 * Domain Path: /languages
 * Author URI: http://xootix.com
@@ -21,7 +21,7 @@ define("XOO_ML_PATH",plugin_dir_path(__FILE__)); // Plugin path
 define( 'XOO_ML_PLUGIN_FILE', __FILE__ );
 define("XOO_ML_URL",plugins_url('',__FILE__)); // plugin url
 define("XOO_ML_PLUGIN_BASENAME",plugin_basename( __FILE__ ));
-define("XOO_ML_VERSION","2.7.0"); //Plugin version
+define("XOO_ML_VERSION","2.7.2"); //Plugin version
 
 /**
  * Initialize
