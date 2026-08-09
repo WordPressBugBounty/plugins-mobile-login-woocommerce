@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Unifonic extends Xoo_Ml_Service{
 
 	public $appid, $senderid;
@@ -39,5 +45,3 @@ class Xoo_Ml_Service_Unifonic extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_Unifonic();
-
-?>

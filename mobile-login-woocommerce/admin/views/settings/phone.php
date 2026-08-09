@@ -1,6 +1,12 @@
 <?php
 
-$country_phone_codes = (array) xoo_ml_country_codes_list();
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
+$country_phone_codes = (array) xoo_ml_helper()->get_country_codes_list();
 
 $phone_codes = array();
 
@@ -67,7 +73,8 @@ $settings = array(
 		'default' 		=> 'firebase',
 		'args'			=> array(
 			'options' => $smsOperators
-		)
+		),
+		'desc' 			=> 'Do required setup under "SMS Operators" tab'
 	),
 
 
@@ -331,14 +338,23 @@ $settings = array(
 		'pro' 			=> 'yes'
 	),
 
-
 	array(
-		'callback' 		=> 'textarea',
-		'section_id' 	=> 'ph_emlogin',
-		'id' 			=> 'm-em-txt',
+		'callback' 		=> 'wp_editor',
 		'title' 		=> 'Email OTP Text',
-		'desc' 			=> 'Shortcodes: [otp]',
-		'default' 		=> '[otp] is your One Time Password (OTP) to login at '.get_bloginfo( 'name' ),
+		'id' 			=> 'm-em-txt',
+		'section_id' 	=> 'ph_emlogin',
+		'args' 			=> array(
+			'group' 	=> 'email_content',
+			'placeholders' => array(
+				'{otp}' 			=> 'OTP', 	
+				'{site_title}' 		=> 'Site Title',
+			),
+			'editor_settings' => array(
+				'editor_height' => 400,
+			)
+
+		),
+		'default' 		=> xoo_ml_admin_settings()->default_email_otp_text(),
 		'pro' 			=> 'yes'
 	),
 
@@ -348,6 +364,7 @@ $settings = array(
 		'id' 			=> 'm-em-subj',
 		'title' 		=> 'Email OTP Subject',
 		'default' 		=> __( 'One time password', 'mobile-login-woocommerce' ),
+		'desc' 			=> 'Shortcodes: [otp]',
 		'pro' 			=> 'yes'
 	),
 
@@ -373,6 +390,34 @@ $settings = array(
 				'autocomplete' => 'disableit'
 			)
 		),
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'checkbox',
+		'section_id' 	=> 'ph_2fa',
+		'id' 			=> 'm-2fa-en',
+		'title' 		=> 'Enable 2FA',
+		'default' 		=> 'no',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'section_id' 	=> 'ph_2fa',
+		'id' 			=> 'm-2fa-type',
+		'title' 		=> 'Default 2FA',
+		'args' 			=> array(
+			'options' => array(
+				'phone' 		=> 'Phone SMS',
+				'email' 		=> 'Email',
+				'authenticator' => 'Authenticator App',
+				'none' 			=> 'Disable'
+			),
+		),
+		'default' 		=> 'none',
+		'desc' 			=> 'If "Phone SMS" is selected and phone number is not available, email will be used',
 		'pro' 			=> 'yes'
 	),
 
@@ -450,6 +495,22 @@ if( class_exists( 'woocommerce' ) ){
 	$settings[] = array(
 		'callback' 		=> 'select',
 		'section_id' 	=> 'woocommerce',
+		'id'			=> 'wc-chk-verify-always',
+		'title' 		=> 'Verify on every order',
+		'default' 		=> 'inline_input',
+		'args'			=> array(
+			'options' => array(
+				'yes'   	=> 'Yes',
+				'no' 		=> 'No, verify once',
+			)	
+		),
+		'pro' 			=> 'yes'
+	);
+
+
+	$settings[] = array(
+		'callback' 		=> 'select',
+		'section_id' 	=> 'woocommerce',
 		'id'			=> 'wc-chk-otp-form-type',
 		'title' 		=> 'OTP Form Type',
 		'default' 		=> 'inline_input',
@@ -502,6 +563,3 @@ $settings[] = array(
 ); 
 
 return apply_filters( 'xoo_ml_admin_settings', $settings, 'phone' );
-
-
-?>

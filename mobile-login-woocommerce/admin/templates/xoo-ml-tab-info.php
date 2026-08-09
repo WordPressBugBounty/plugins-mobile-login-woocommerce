@@ -1,3 +1,12 @@
+<?php
+
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+?>
+
 <div class="xoo-ml-tab-info">
 	<ul>
 		<li>

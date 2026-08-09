@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Gf_Phone extends GF_Field_Phone {
  
     public $type = 'xoo_ml_phone';
@@ -28,8 +34,8 @@ class Xoo_Ml_Gf_Phone extends GF_Field_Phone {
 	                <?php esc_html_e( 'Form Type', 'gravityforms' ); ?>
 	            </label>
 	            <select id="xoo_ml_phone_type" onchange="SetFieldProperty('xooMlPhoneType', this.value);">
-	            	<option value="register_user"><?php _e( 'Register User', 'gravityforms' ); ?></option>
-	            	<option value="gf_default" selected="selected"><?php _e( 'Save as a field entry', 'gravityforms' ); ?></option>
+	            	<option value="register_user"><?php esc_html_e( 'Register User', 'gravityforms' ); ?></option>
+	            	<option value="gf_default" selected="selected"><?php esc_html_e( 'Save as a field entry', 'gravityforms' ); ?></option>
 	            </select>
 	        </li>
 
@@ -164,4 +170,3 @@ class Xoo_Ml_Gf_Phone extends GF_Field_Phone {
 }
 GF_Fields::register( new Xoo_Ml_Gf_Phone() );
 Xoo_Ml_Gf_Phone::hooks();
-?>

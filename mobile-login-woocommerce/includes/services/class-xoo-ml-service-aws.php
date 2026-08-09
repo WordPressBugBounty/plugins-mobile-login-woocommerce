@@ -4,6 +4,12 @@ use Aws\Sns\SnsClient;
 use Aws\Exception\AwsException;
 use Aws\Credentials\Credentials;
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_AWS extends Xoo_Ml_Service{
 
 	public $accessKey, $secretKey, $credentials, $region;
@@ -60,7 +66,7 @@ class Xoo_Ml_Service_AWS extends Xoo_Ml_Service{
 		    ]);
 		} catch (AwsException $e) {
 		    // output error message if fails
-		    return new WP_Error( 'operator-error', $e->getMessage() );
+		    return new \WP_Error( 'operator-error', $e->getMessage() );
 		} 
 
 	}
@@ -68,5 +74,3 @@ class Xoo_Ml_Service_AWS extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_AWS();
-
-?>

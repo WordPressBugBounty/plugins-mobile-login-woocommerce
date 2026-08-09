@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Custom extends Xoo_Ml_Service{
 
 	public $apiparams, $url, $method, $format, $authType, $authInfo, $numberFormat;
@@ -88,5 +94,3 @@ class Xoo_Ml_Service_Custom extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_Custom();
-
-?>

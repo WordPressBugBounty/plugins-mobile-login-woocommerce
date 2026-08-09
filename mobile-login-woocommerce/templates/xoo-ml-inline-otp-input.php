@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/mobile-login-woocommerce/
- * @version 2.6.7
+ * @version 2.7.3
  */
 
 
@@ -21,11 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="xoo-ml-inline-otp-cont">
 	<div class="xoo-ml-ioc-input">
-		<input type="tel" name="xoo-ml-otp-input" placeholder="<?php _e( 'Enter OTP', 'mobile-login-woocommerce' ); ?>" class="xoo-ml-otp-input">
-		<span class="xoo-ml-otp-submit-btn"><?php _e( 'Submit', 'mobile-login-woocommerce' ); ?></span>
+		<input type="tel" name="xoo-ml-otp-input" placeholder="<?php esc_html_e( 'Enter OTP', 'mobile-login-woocommerce' ); ?>" class="xoo-ml-otp-input">
+		<span class="xoo-ml-otp-submit-btn"><?php esc_html_e( 'Submit', 'mobile-login-woocommerce' ); ?></span>
 	</div>
 	<div class="xoo-ml-otp-resend">
-		<a class="xoo-ml-otp-resend-link"><?php _e( 'Not received your code? Resend code', 'mobile-login-woocommerce' ); ?></a>
+		<a class="xoo-ml-otp-resend-link"><?php esc_html_e( 'Not received your code? Resend code', 'mobile-login-woocommerce' ); ?></a>
 		<span class="xoo-ml-otp-resend-timer"></span>
 	</div>
 	<span class="xoo-ml-otp-no-txt"></span>

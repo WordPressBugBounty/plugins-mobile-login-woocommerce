@@ -68,7 +68,7 @@ class Xoo_Ml_Admin_Settings{
 
 		<ol>
 			<?php if( get_option( 'woocommerce_enable_myaccount_registration' ) !== "yes" ): ?>
-				<li class="xoo-as-info-warning"><b>Account creation on my account page</b> is disabled under woocommerce settings. You will not be able to register and login users with OTP. <a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=account' ) ?>">Please enable</a></li>
+				<li class="xoo-as-info-warning"><b>Account creation on my account page</b> is disabled under woocommerce settings. You will not be able to register and login users with OTP. <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=account' ) ) ?>">Please enable</a></li>
 			<?php endif; ?>
 			<?php if( !class_exists('woocommerce') ): ?>
 				<li class="xoo-as-info-warning">The free version works only with woocommerce login/registration forms. You do not have woocommerce installed.</li>
@@ -108,7 +108,7 @@ class Xoo_Ml_Admin_Settings{
 			$json      = json_decode( $body, true );
 
 			if( !isset( $json['success'] ) ){
-				throw new Xoo_Exception( $body );	
+				throw new XooEL\Framework\Xoo_Exception( $body );	
 			}
 
 			wp_send_json( array(
@@ -432,6 +432,28 @@ class Xoo_Ml_Admin_Settings{
 			return $unzipfile;
 		}
 
+	}
+
+	public function default_email_otp_text(){
+		ob_start();
+		?>
+
+		<p style="margin: 0px 0px 16px;">Hi,</p>
+
+		<p style="margin: 0px 0px 16px;">Your 6-digit login verification code is:</p>
+
+		<p style="margin: 0px 0px 16px; font-size: 27px; font-weight: bold; background-color: #f5f5f5; padding: 20px 10px; text-align: center;">{otp}</p>
+
+		<p style="margin: 0px 0px 16px;">Enter this code on the login page to securely access your account.</p>
+
+		<p style="margin: 0px 0px 16px;">If you didn’t try to log in, please ignore this email or contact our support team if you have concerns.</p>
+
+		<p style="margin: 0px 0px 16px;">Thanks,<br/>
+		The {site_title} Team</p>
+
+
+		<?php
+		return ob_get_clean();
 	}
 	
 

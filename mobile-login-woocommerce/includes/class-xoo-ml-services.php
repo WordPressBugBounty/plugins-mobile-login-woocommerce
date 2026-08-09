@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Services{
 
 	protected static $_instance;

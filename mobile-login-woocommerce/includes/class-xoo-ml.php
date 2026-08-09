@@ -39,7 +39,6 @@ class Xoo_Ml{
 		require_once XOO_ML_PATH.'/includes/class-xoo-ml-helper.php';
 
 		require_once XOO_ML_PATH.'includes/xoo-ml-functions.php';
-		require_once XOO_ML_PATH.'includes/class-xoo-ml-geolocation.php';
 
 		require_once XOO_ML_PATH.'includes/class-xoo-ml-services.php';
 

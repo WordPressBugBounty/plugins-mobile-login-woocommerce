@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_WhatsApp extends Xoo_Ml_Service{
 
 	public $phoneID, $template, $language;
@@ -79,5 +85,3 @@ class Xoo_Ml_Service_WhatsApp extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_WhatsApp();
-
-?>

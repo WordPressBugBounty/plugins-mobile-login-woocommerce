@@ -1,22 +1,31 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 $tabs = array(
 	'phone' => array(
-		'title'			=> 'Phone',
+		'title'			=> 'General',
 		'id' 			=> 'phone',
-		'option_key' 	=> 'xoo-ml-phone-options'
+		'option_key' 	=> 'xoo-ml-phone-options',
+		'icon' 			=> 'xoo-icon-setting',
 	),
 
 	'services' => array(
-		'title'			=> 'Services',
+		'title'			=> 'SMS Operators',
 		'id' 			=> 'services',
-		'option_key' 	=> 'xoo-ml-services-options'
+		'option_key' 	=> 'xoo-ml-services-options',
+		'icon' 			=> 'xoo-icon-sms',
 	),
 
 	'pro' => array(
 		'title'			=> 'PRO',
 		'id' 			=> 'pro',
 		'option_key' 	=> '',
+		'icon' 			=> 'xoo-icon-crown',
 	),
 
 

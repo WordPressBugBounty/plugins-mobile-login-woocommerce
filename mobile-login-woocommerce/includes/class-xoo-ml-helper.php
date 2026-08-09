@@ -1,5 +1,13 @@
 <?php
 
+use XooML\Framework\Xoo_Helper;
+
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Helper extends Xoo_Helper{
 
 	protected static $_instance = null;
@@ -9,6 +17,8 @@ class Xoo_Ml_Helper extends Xoo_Helper{
 	public $sms_enabled;
 
 	public $mergeCC;
+
+	public $allowed_country_codes;
 
 	public function __construct(...$args){
 		parent::__construct(...$args);
@@ -43,6 +53,48 @@ class Xoo_Ml_Helper extends Xoo_Helper{
 		return $this->get_phone_option('r-enable-cc-field') === "yes" && $this->get_phone_option('m-show-country-code-as') === 'selectbox';
 	}
 
+	public function get_allowed_country_codes(){
+
+		if( !isset( $this->allowed_country_codes ) ){
+
+			$allowed 	= xoo_ml_helper()->get_phone_option('r-countries');
+			$allowed 	= !is_array( $allowed ) ? array() : $allowed;
+
+		 	$all 		= $this->get_country_codes_list();
+
+
+		 	$return = array();
+
+		 	if( $allowed && !empty( $allowed ) ){
+		 		foreach ($all as $cc => $phone_code ) {
+		 			if( in_array( $phone_code , $allowed ) ){
+		 				$return[ $cc ] = $phone_code;
+		 			}
+		 		}
+		 	}
+		 	else{
+		 		$return = $all;
+		 	}
+
+		 	$this->allowed_country_codes = apply_filters( 'xoo_ml_country_codes', $return );
+
+		}
+
+		return $this->allowed_country_codes;
+
+	}
+
+	public function get_country_codes_list(){
+		return apply_filters( 'xoo_ml_country_codes_list', include XOO_ML_PATH . '/includes/xoo-framework/countries/phone.php' );
+	}
+
+
+	public function get_allowed_phone_codes_list(){
+		return array_values( $this->get_allowed_country_codes() );
+	}
+
+
+
 }
 
 function xoo_ml_helper(){
@@ -53,5 +105,3 @@ function xoo_ml_helper(){
 	) );
 }
 xoo_ml_helper();
-
-?>

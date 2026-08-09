@@ -19,22 +19,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<span class="xoo-ml-or"><?php _e( 'Or', 'mobile-login-woocommerce' ); ?></span>
+<span class="xoo-ml-or"><?php esc_html_e( 'Or', 'mobile-login-woocommerce' ); ?></span>
 
-<button type="button" class="xoo-ml-open-lwo-btn button btn <?php echo esc_attr( implode( ' ', $args['button_class'] ) ); ?> "><?php _e( 'Login with OTP', 'mobile-login-woocommerce' ); ?></button>
+<button type="button" class="xoo-ml-open-lwo-btn button btn <?php echo esc_attr( implode( ' ', $args['button_class'] ) ); ?> "><?php esc_html_e( 'Login with OTP', 'mobile-login-woocommerce' ); ?></button>
 
 <div class="xoo-ml-lwo-form-placeholder" <?php if( $args['login_first'] !== 'yes' ): ?> style="display: none;" <?php endif; ?> >
 
-	<?php echo xoo_ml_get_phone_input_field( $args );  ?>
+	
+	<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo xoo_ml_get_phone_input_field( $args );
+	?>
 
 	<input type="hidden" name="redirect" value="<?php echo esc_attr( $args['redirect'] ); ?>">
 
 	<input type="hidden" name="xoo-ml-login-with-otp" value="1">
 
-	<button type="submit" class="xoo-ml-login-otp-btn <?php echo esc_attr( implode( ' ', $args['button_class'] ) ); ?> "><?php _e( 'Login with OTP', 'mobile-login-woocommerce' ); ?></button>
+	<button type="submit" class="xoo-ml-login-otp-btn <?php echo esc_attr( implode( ' ', $args['button_class'] ) ); ?> "><?php esc_html_e( 'Login with OTP', 'mobile-login-woocommerce' ); ?></button>
 
-	<span class="xoo-ml-or"><?php _e( 'Or', 'mobile-login-woocommerce' ); ?></span>
+	<span class="xoo-ml-or"><?php esc_html_e( 'Or', 'mobile-login-woocommerce' ); ?></span>
 
-	<button type="button" class="xoo-ml-low-back <?php echo esc_attr( implode( ' ', $args['button_class'] ) ); ?>"><?php _e( 'Login with Email & Password', 'mobile-login-woocommerce' ); ?></button>
+	<button type="button" class="xoo-ml-low-back <?php echo esc_attr( implode( ' ', $args['button_class'] ) ); ?>"><?php esc_html_e( 'Login with Email & Password', 'mobile-login-woocommerce' ); ?></button>
 
 </div>

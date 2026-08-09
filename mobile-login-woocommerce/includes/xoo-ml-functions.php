@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 //Add notice
 function xoo_ml_add_notice( $message, $notice_type = 'error' ){
 
@@ -24,7 +30,7 @@ function xoo_ml_get_phone_input_field( $args = array(), $return = false ){
 		'cc_show' 			=> $settings['r-enable-cc-field'],
 		'cc_type'	 		=> $settings['m-show-country-code-as'],
 		'default_phone' 	=> '', 
-		'default_cc' 		=> $settings['r-default-country-code-type'] === 'geolocation' ? Xoo_Ml_Geolocation::get_phone_code() : $settings['r-default-country-code'],
+		'default_cc' 		=> $settings['r-default-country-code-type'] === 'geolocation' ? xoo_ml_helper()->geolocate()->get_phone_code() : $settings['r-default-country-code'],
 		'form_token' 		=> mt_rand( 1000, 9999 ),
 		'form_type' 		=> 'register_user',
 		'otp_display' 		=> $settings['m-otp-form-type'],
@@ -124,7 +130,7 @@ function xoo_ml_get_user_by_phone( $phone_no, $phone_code = '' ){
 	//In case there are more than one user registered with the same mobile number but different phone code ( Highly Unlikely ).
 	//Get current user's location phone code
 	if( count( $phone_users ) > 1 ){
-		$phone_code = !$phone_code ? Xoo_Ml_Geolocation::get_phone_code() : $phone_code;
+		$phone_code = !$phone_code ? xoo_ml_helper()->geolocate()->get_phone_code() : $phone_code;
 		foreach ( $phone_users as $phone_user ) {
 			if( xoo_ml_get_user_phone( $phone_user->ID, 'code', true ) !== $phone_code ) continue;
 			return $phone_user;
@@ -147,42 +153,20 @@ function xoo_ml_operator_data(){
 
 
 function xoo_ml_get_country_codes(){
-
-	$allowed 	= xoo_ml_helper()->get_phone_option('r-countries');
-	$allowed 	= !is_array( $allowed ) ? array() : $allowed;
-
- 	$all = xoo_ml_country_codes_list();
-
- 	$return = array();
-
- 	if( $allowed && !empty( $allowed ) ){
- 		foreach ($all as $cc => $phone_code ) {
- 			if( in_array( $phone_code , $allowed ) ){
- 				$return[ $cc ] = $phone_code;
- 			}
- 		}
- 	}
- 	else{
- 		$return = $all;
- 	}
-
- 	return apply_filters( 'xoo_ml_country_codes', $return );
-
+	return xoo_ml_helper()->get_allowed_country_codes();
 }
 
 function xoo_ml_country_codes_list(){
-	return apply_filters( 'xoo_ml_country_codes_list', include XOO_ML_PATH.'/countries/phone.php' );	
+	return xoo_ml_helper()->get_country_codes_list();
 }
 
 function xoo_ml_get_default_phone_code(){
 
-	if( xoo_ml_helper()->get_phone_option('r-default-country-code-type') === 'geolocation' && Xoo_Ml_Geolocation::get_phone_code() ){
-		$default_cc = Xoo_Ml_Geolocation::get_phone_code();
+	if( xoo_ml_helper()->get_phone_option('r-default-country-code-type') === 'geolocation' && xoo_ml_helper()->geolocate()->get_phone_code() ){
+		$default_cc = xoo_ml_helper()->geolocate()->get_phone_code();
 	}else{
 		$default_cc = xoo_ml_helper()->get_phone_option('r-default-country-code');
 	}
 
 	return $default_cc;
 }
-
-?>

@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Msg91 extends Xoo_Ml_Service{
 
 	public $authkey, $senderid, $route, $templateid;
@@ -42,5 +48,3 @@ class Xoo_Ml_Service_Msg91 extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_Msg91();
-
-?>

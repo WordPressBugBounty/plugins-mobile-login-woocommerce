@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Netgsm extends Xoo_Ml_Service{
 
 	public $sid, $token, $senderNumber;
@@ -39,5 +45,3 @@ class Xoo_Ml_Service_Netgsm extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_Netgsm();
-
-?>

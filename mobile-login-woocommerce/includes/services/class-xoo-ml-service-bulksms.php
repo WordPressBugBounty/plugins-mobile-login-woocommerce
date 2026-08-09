@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Bulksms extends Xoo_Ml_Service{
 
 	public $username, $password, $senderNumber;
@@ -36,5 +42,3 @@ class Xoo_Ml_Service_Bulksms extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_Bulksms();
-
-?>

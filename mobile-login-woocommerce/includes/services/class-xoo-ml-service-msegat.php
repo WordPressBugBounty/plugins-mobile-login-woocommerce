@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Msegat extends Xoo_Ml_Service{
 
 	public $user, $apikey, $usersender, $encoding;

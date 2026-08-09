@@ -8,21 +8,20 @@ class Xoo_Ml_Otp_Handler{
 
 	protected static $_instance = null;
 
-	protected static $ip_address, $geoData;
-
 	public $operator;
+
+	public static $form_id = 'phone';
 
 	public static function get_instance(){
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
+
 		return self::$_instance;
 	}
 
 	public function __construct(){
-		self::$geoData 		= Xoo_Ml_Geolocation::get_data();
-		self::$ip_address 	= self::$geoData['ip_address'];
-		self::cleanup();
+		
 	}
 
 
@@ -32,12 +31,16 @@ class Xoo_Ml_Otp_Handler{
 	*/
 	public static function onlySendOTPSMS( $phone_code, $phone_no ){
 
+		if( !in_array( $phone_code, xoo_ml_helper()->get_allowed_phone_codes_list() ) ){
+			return new Wp_Error( 'no-phonecode', sprintf( __( 'Sorry, %s phone code is not allowed.', 'mobile-login-woocommerce' ), $phone_code ) );
+		}
+
 		//Remove 0
 		if( strrpos( $phone_no , 0 ) === 0 ){
 			$phone_no = substr( $phone_no, 1); 
 		}
 
-		$otp =  self::generate_otp_digits();
+		$otp = self::generate_otp_digits();
 
 		$smsParams = apply_filters( 'xoo_ml_sms_send_params', array( $phone_code, $phone_no, self::getOTPSMSText( $otp ), $otp ) );
 
@@ -65,13 +68,16 @@ class Xoo_Ml_Otp_Handler{
 		if( xoo_ml_helper()->whatsapp_enabled ){
 			$whatsappOperator 	= xoo_ml_services()->get_whatsapp_service();
 			$whatsappSent 		= $whatsappOperator->sendSMS( $smsParams[0].$smsParams[1], $smsParams[3], $smsParams[0], $smsParams[1] );
+
 			if( $smsSent === false && is_wp_error($whatsappSent) ){
 				return $whatsappSent;
 			}
 		}
 
+		
 		 if( xoo_ml_helper()->get_phone_option('m-en-debug') === 'yes' ){
 		 	if( xoo_ml_helper()->get_phone_option('m-operator') === 'firebase'  && !$whatsappSent ) return;
+
 		 	wp_send_json( array(
 		 		'error' => 1,
 		 		'notice' => $smsSent.$whatsappSent
@@ -79,6 +85,7 @@ class Xoo_Ml_Otp_Handler{
 		 }
 
 
+		
 		return array(
 			'otp' 			=> $otp,
 			'smsSent' 		=> $smsSent !== false,
@@ -92,7 +99,7 @@ class Xoo_Ml_Otp_Handler{
 	*/
 	public static function sendOTPSMS( $phone_code, $phone_no ){
 
-		$ok_to_send_otp = self::ok_to_send_otp( $phone_code, $phone_no );
+		$ok_to_send_otp = self::ok_to_send_otp( $phone_code.$phone_no );
 		
 		if( is_wp_error( $ok_to_send_otp ) ){
 			return $ok_to_send_otp;
@@ -100,14 +107,8 @@ class Xoo_Ml_Otp_Handler{
 
 		$phone_otp_data = self::get_otp_data();
 
-		if( $phone_otp_data){
-			$sent_times 	= (int) $phone_otp_data['sent_times'];
-			$incorrect 		= $phone_otp_data['incorrect'];
-		}else{
-			$incorrect = $sent_times = 0;
-		}
-
 		$otp_sent = self::onlySendOTPSMS( $phone_code, $phone_no );
+		//$otp_sent = true;
 
 		if( is_wp_error( $otp_sent ) ){
 			return $otp_sent;
@@ -115,16 +116,12 @@ class Xoo_Ml_Otp_Handler{
 
 		$otp = $otp_sent['otp'];
 
-		$sent_times++;
-
 		$data = array(
 			'phone_no' 		=> $phone_no,
 			'phone_code' 	=> $phone_code,
+			'sendTo' 		=> $phone_code.$phone_no,
 			'otp' 			=> $otp,
-			'created' 		=> strtotime('now'),
 			'expiry' 		=> strtotime( xoo_ml_helper()->get_phone_option('otp-expiry'). ' seconds' ),
-			'incorrect' 	=> $incorrect,
-			'sent_times'	=> $sent_times,
 			'verified' 		=> false,
 			'form_token' 	=> false,
 			'whatsapp_sent' => $otp_sent['whatsappSent'],
@@ -132,6 +129,16 @@ class Xoo_Ml_Otp_Handler{
 		);
 
 		self::set_otp_data( $data );
+
+		$limit_data = self::get_destination_limit_data( $data['sendTo'] );
+
+        self::set_destination_limit_data( $data['sendTo'], array(
+            'sent_times' => isset( $limit_data['sent_times'] ) ? (int) $limit_data['sent_times'] + 1 : 1,
+            'incorrect'  => isset( $limit_data['incorrect'] ) ? (int) $limit_data['incorrect'] : 0,
+        ) );
+
+
+        $limit_data = self::get_destination_limit_data( $data['sendTo'] );
 
 		return $otp;
 	}
@@ -145,42 +152,37 @@ class Xoo_Ml_Otp_Handler{
 		if( !$phone_otp_data  || !isset( $phone_otp_data[ 'phone_no' ] ) || !$phone_otp_data[ 'phone_no' ] || !isset( $phone_otp_data['phone_code'] ) ){
 			return new Wp_Error( 'no-phone', __( "Phone Number not found", 'mobile-login-woocommerce' ) );
 		}
+
 		$otp = self::sendOTPSMS( $phone_otp_data['phone_code'], $phone_otp_data['phone_no'] );
+
 		return $otp;
 	}
 
 
 	public static function generate_otp_digits(){
 		$digits = xoo_ml_helper()->get_phone_option('otp-digits') ? xoo_ml_helper()->get_phone_option('otp-digits') : 4;
-		return rand( pow( 10, $digits - 1 ) , pow( 10, $digits ) - 1 );
+
+		return random_int( pow( 10, $digits - 1 ) , pow( 10, $digits ) - 1 );
 	}
 
 
 	public static function set_otp_data( $key, $value = '' ){
 
-		$ip_address = self::$ip_address;
-		$users 		= self::get_otp_users();
+		self::ensure_verification_token();
 
-		if( !is_array( $users ) ){
-			$users = array();
-		}
+        $data = self::get_otp_data();
 
-		if( !isset( $users[ $ip_address ] ) ){
-			$users[ $ip_address ] = array();
-		}
+        if( is_array( $key ) ){
+        	$data   = wp_parse_args( $key, $data );
+        }
+        else{
+        	$data[ $key ] = $value;
+        }
 
-		if( is_array( $key ) ){
-			$users[ $ip_address ] = wp_parse_args(
-				$key,
-				$users[ $ip_address ]
-			);
-		}else{
-			$users[ $ip_address ][ $key ] = $value;
-		}
+        $data['last_updated']   = time();
 
-		$users[ $ip_address ][ 'last_updated' ] = time();
+        set_transient( self::get_transient_name(), $data, DAY_IN_SECONDS );
 
-		update_option( 'xoo_ml_otp_users', $users );
 	}
 
 
@@ -188,56 +190,91 @@ class Xoo_Ml_Otp_Handler{
 		return (array) get_option( 'xoo_ml_otp_users' );
 	}
 
-	public static function get_otp_data(){
-		$users = get_option( 'xoo_ml_otp_users' );
-		if( is_array( $users ) && isset( $users[ self::$ip_address ] ) ){
-			return $users[ self::$ip_address ]; 
-		}
-		return false;
+
+	public static function get_otp_data( $subkey = '' ){
+
+
+		$transient_name = self::get_transient_name();
+        
+        $user_data = $transient_name ? get_transient( $transient_name ) : array();
+
+        if( $subkey ){
+            return isset( $user_data[$subkey] ) ? $user_data[$subkey] : null;
+        }
+
+        return $user_data;
+
+
 	}
 
 
-	public static function ok_to_send_otp( $phone_code = '', $phone_no = '' ){
+	public static function incorrect_tries_limit_reached( $destination = '' ){
 
-		$data = self::get_otp_data();
+        $limit_data = $destination ? self::get_destination_limit_data( $destination ) : self::get_otp_data();
 
-		if( !is_array( $data ) || empty( $data ) ) return;
+        if( isset( $limit_data['incorrect'] ) && $limit_data['incorrect'] >= xoo_ml_helper()->get_phone_option('otp-incorrect-limit') ){
+            return new \WP_Error( 'tries-exceeded', __( 'Number of tries exceeded, Please try again in few minutes', 'mobile-login-woocommerce' ) );
+        }
 
-		$resend_limit 		= xoo_ml_helper()->get_phone_option('otp-resend-limit');
-		$incorrect_limit 	= xoo_ml_helper()->get_phone_option('otp-incorrect-limit');
-		$resend_wait_time 	= xoo_ml_helper()->get_phone_option('otp-resend-wait');
-		$ban_time 			= xoo_ml_helper()->get_phone_option('otp-ban-time');
+        return false;
 
-		$time_passed = strtotime("now") - (int) $data['created'];
+    }
 
-		if( $data['sent_times'] > $resend_limit ){
-			$unban_time_left = $ban_time - $time_passed;
-			if(  $unban_time_left < 0  ){
-				self::set_otp_data( 'sent_times', 0 );
-			}
-			else{
-				return new WP_Error( 'limit-reached', sprintf( __( 'OTP Limit reached. Please try again in %s.', 'mobile-login-woocommerce' ), self::getTimeDuration( $unban_time_left) ) );
-			}
-		}
 
-		if( $data['phone_no'] === $phone_no && $data['phone_code'] === $phone_code && $data['sent_times'] >= 1 &&  $resend_wait_time > $time_passed ){
-			$unban_time_left = $resend_wait_time - $time_passed;
+	public static function ok_to_send_otp( $sendTo = '' ){
+
+        $limit_data = self::get_destination_limit_data( $sendTo );
+
+        if( !is_array( $limit_data ) || empty( $limit_data ) ) return;
+
+        $limits = array(
+			'resend_limit'     => xoo_ml_helper()->get_phone_option('otp-resend-limit'),
+			'incorrect_limit'  => xoo_ml_helper()->get_phone_option('otp-incorrect-limit'),
+			'resend_wait_time' => xoo_ml_helper()->get_phone_option('otp-resend-wait'),
+			'ban_time'         => xoo_ml_helper()->get_phone_option('otp-ban-time'),
+		);
+
+        $time_passed = time() - (int) $limit_data['created'];
+
+
+        if( isset( $limit_data['sent_times'] ) && $limit_data['sent_times'] >= $limits['resend_limit'] ){
+
+            $unban_time_left = $limits['ban_time'] - $time_passed;
+
+            if(  $unban_time_left < 0  ){
+                self::set_destination_limit_data( $sendTo, array( 'sent_times' => 0, 'created' => time() ) );
+            }
+            else{
+                return new \WP_Error( 'limit-reached', sprintf( __( 'OTP Limit reached. Please try again in %s.', 'mobile-login-woocommerce' ), self::getTimeDuration( $unban_time_left) ) );
+            }
+        }
+
+
+        $incorrect_tries_limit_reached = self::incorrect_tries_limit_reached( $sendTo );
+
+        if( is_wp_error(  $incorrect_tries_limit_reached ) ){
+
+            $unban_time_left = $limits['ban_time'] - $time_passed;
+
+
+            if( $unban_time_left < 0 ){
+                self::set_destination_limit_data( $sendTo, array( 'incorrect' => 0, 'created' => time() ) );
+            }
+            else{
+                return $incorrect_tries_limit_reached;
+            }
+        }
+
+
+        if( $limit_data['sent_times'] >= 1 &&  $limits['resend_wait_time'] > $time_passed ){
+			$unban_time_left = $limits['resend_wait_time'] - $time_passed;
+
 			return new WP_Error( 'resend-wait', sprintf( __( 'Please wait %s for a new OTP.', 'mobile-login-woocommerce' ), self::getTimeDuration( $unban_time_left) ) );
 		}
 
 
-		if( $data['incorrect'] >= $incorrect_limit ){
-			$unban_time_left = $ban_time - $time_passed;
-			if( $unban_time_left < 0 ){
-				self::set_otp_data( 'incorrect', 0 );
-			}
-			else{
-				return new WP_Error( 'tries-exceeded', sprintf( __( 'Maximum number of tries exceeded. Please try again in %s.', 'mobile-login-woocommerce' ), self::getTimeDuration( $unban_time_left) ) );
-			}
-		}
+    }
 
-
-	}
 
 
 	public static function getTimeDuration( $time ){
@@ -252,6 +289,7 @@ class Xoo_Ml_Otp_Handler{
 		$placeholders = array(
 			'[otp]'		=> $otp,
 		);
+
 		foreach ( $placeholders as $placeholder => $placeholder_value ) {
 			$sms_text = str_replace( $placeholder , $placeholder_value , $sms_text );
 		}
@@ -263,37 +301,134 @@ class Xoo_Ml_Otp_Handler{
 
 
 
-	/**
-	 * Removing users & doing the cleanup
-	*/
-	public static function cleanup(){
 
-		$last_cleanup = (int) get_option( 'xoo_ml_last_cleanup', true );
+    public static function get_transient_name(){
 
-		$now = time();
+        $token = self::get_verification_token();
 
-		//Check if cleanup was done 24 hours ago
-		if( ( $now - $last_cleanup ) < ( apply_filters( 'xoo_ml_cleanup_last_done', 24 ) * 1 ) ){
-			return;
-		}
+        if ( ! $token ) {
+            return '';
+        }
 
-		$users = self::get_otp_users();
+        // The browser receives only the random token. Store and look up the
+        // verification state by its keyed hash so a leaked transient name is
+        // not itself a usable bearer credential.
+        return 'xoo_ml_verification_' . sanitize_key( self::$form_id ) . '_' . hash_hmac( 'sha256', $token, wp_salt( 'auth' ) );
+    }
 
-		if( empty( $users ) ) return;
 
-		foreach ( $users as $ip_address => $user ) {
-			//If user updated less than 10 mins ago, skip
-			if( ( $now - $user[ 'last_updated' ] ) < 600 ) continue;
-			unset( $users[ $ip_address ] ); // remove ip address
-		}
+    public static function get_verification_cookie_name(){
+        return 'xoo_ml_verification_' . sanitize_key( self::$form_id );
+    }
 
-		update_option( 'xoo_ml_otp_users', $users );
-		update_option( 'xoo_ml_last_cleanup', $now );
 
-	}
+    public static function get_verification_token(){
+        $cookie_name = self::get_verification_cookie_name();
+
+        if ( empty( $_COOKIE[ $cookie_name ] ) ) {
+            return '';
+        }
+
+        // Tokens created below are URL-safe base64 strings. Reject anything
+        // else rather than using arbitrary client input in a transient key.
+        $token = sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) );
+
+        return preg_match( '/^[A-Za-z0-9_-]{43}$/', $token ) ? $token : '';
+    }
+
+
+    public static function create_verification_token(){
+        $token = rtrim( strtr( base64_encode( random_bytes( 32 ) ), '+/', '-_' ), '=' );
+        $cookie_name = self::get_verification_cookie_name();
+        $expires = time() + DAY_IN_SECONDS;
+        $path = COOKIEPATH ? COOKIEPATH : '/';
+
+        if ( PHP_VERSION_ID >= 70300 ) {
+            setcookie( $cookie_name, $token, array(
+                'expires'  => $expires,
+                'path'     => $path,
+                'domain'   => COOKIE_DOMAIN,
+                'secure'   => is_ssl(),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ) );
+        } else {
+            setcookie( $cookie_name, $token, $expires, $path, COOKIE_DOMAIN, is_ssl(), true );
+        }
+
+        // Make it available during this request too; PHP does not populate
+        // $_COOKIE until the browser makes its next request.
+        $_COOKIE[ $cookie_name ] = $token;
+
+        return $token;
+    }
+
+
+    public static function ensure_verification_token(){
+        return self::get_verification_token() ?: self::create_verification_token();
+    }
+
+
+    public static function get_destination_limit_transient_name( $destination ){
+        $destination = strtolower( trim( (string) $destination ) );
+
+        return 'xoo_ml_verification_limit_' . sanitize_key( self::$form_id ) . '_' . hash_hmac( 'sha256', $destination, wp_salt( 'auth' ) );
+    }
+
+
+    public static function get_destination_limit_data( $destination ){
+        return get_transient( self::get_destination_limit_transient_name( $destination ) );
+    }
+
+
+    public static function set_destination_limit_data( $destination, $data = array() ){
+
+        $existing = self::get_destination_limit_data( $destination );
+
+        $data = wp_parse_args( $data, is_array( $existing ) ? $existing : array() );
+
+        if ( empty( $data['created'] ) ) {
+            $data['created'] = time();
+        }
+
+        set_transient( self::get_destination_limit_transient_name( $destination ), $data, DAY_IN_SECONDS );
+    }
+
+
+    public static function consume_verification(){
+        $transient_name = self::get_transient_name();
+
+        if ( $transient_name ) {
+            delete_transient( $transient_name );
+        }
+
+        $cookie_name = self::get_verification_cookie_name();
+        $path = COOKIEPATH ? COOKIEPATH : '/';
+
+        setcookie( $cookie_name, ' ', time() - YEAR_IN_SECONDS, $path, COOKIE_DOMAIN, is_ssl(), true );
+
+        unset( $_COOKIE[ $cookie_name ] );
+    }
+
+
+    public static function hash_code( $code ){
+        return hash_hmac( 'sha256', (string) $code, wp_salt( 'nonce' ) );
+    }
+
+
+    public function is_user_verified(){
+        $user_data = self::get_otp_data();
+
+        return ! empty( $user_data['verified'] )
+            && ! empty( $user_data['verified_until'] )
+            && time() <= (int) $user_data['verified_until'];
+    }
+
 }
+
 
 function xoo_ml_otp_handler(){
 	return Xoo_Ml_Otp_Handler::get_instance();
 }
+
 xoo_ml_otp_handler();

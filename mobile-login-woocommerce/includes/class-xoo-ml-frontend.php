@@ -25,7 +25,7 @@ class Xoo_Ml_Phone_Frontend{
 	public function hooks(){
 
 		if( $this->settings['r-default-country-code-type'] === 'geolocation' ){
-			add_action( 'init', array( $this, 'fetch_geolocation' ), 0 );
+			//add_action( 'init', array( $this, 'fetch_geolocation' ), 0 );
 		}
 
 
@@ -47,7 +47,7 @@ class Xoo_Ml_Phone_Frontend{
 
 
 	public function fetch_geolocation(){
-		Xoo_Ml_Geolocation::get_data();
+		xoo_ml_helper()->geolocate()->get_data();
 	}
 
 

@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/mobile-login-woocommerce/
- * @version 2.6.7
+ * @version 2.7.3
  */
 
 
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<div class="xoo-ml-otp-sent-txt">
 		<span class="xoo-ml-otp-no-txt"></span>
-		<span class="xoo-ml-otp-no-change"> <?php _e( "Change", 'mobile-login-woocommerce' ); ?></span>
+		<span class="xoo-ml-otp-no-change"> <?php esc_html_e( "Change", 'mobile-login-woocommerce' ); ?></span>
 	</div>
 
 	<div class="xoo-ml-otp-notice-cont">
@@ -39,10 +39,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<input type="hidden" name="xoo-ml-otp-phone-no" >
 	<input type="hidden" name="xoo-ml-otp-phone-code" >
 
-	<button type="submit" class="button btn xoo-ml-otp-submit-btn"><?php _e( 'Verify', 'mobile-login-woocommerce' ); ?> </button>
+	<button type="submit" class="button btn xoo-ml-otp-submit-btn"><?php esc_html_e( 'Verify', 'mobile-login-woocommerce' ); ?> </button>
 
 	<div class="xoo-ml-otp-resend">
-		<a class="xoo-ml-otp-resend-link"><?php _e( 'Not received your code? Resend code', 'mobile-login-woocommerce' ); ?></a>
+		<a class="xoo-ml-otp-resend-link"><?php esc_html_e( 'Not received your code? Resend code', 'mobile-login-woocommerce' ); ?></a>
 		<span class="xoo-ml-otp-resend-timer"></span>
 	</div>
 

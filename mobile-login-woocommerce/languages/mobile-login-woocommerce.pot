@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-12-14 16:13+0530\n"
+"POT-Creation-Date: 2026-08-09 06:44+0530\n"
 "PO-Revision-Date: 2019-12-10 00:36+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_attr_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-xoo-ml-admin-settings.php:327
@@ -21,13 +21,11 @@ msgid "Settings"
 msgstr ""
 
 #: admin/class-xoo-ml-users-table.php:43
-#: admin/includes/class-xoo-ml-users-table.php:40
-#: includes/class-xoo-ml-verification.php:273
+#: includes/class-xoo-ml-verification.php:275
 msgid "Please select country code"
 msgstr ""
 
 #: admin/class-xoo-ml-users-table.php:47
-#: admin/includes/class-xoo-ml-users-table.php:44
 #, php-format
 msgid "User: #%1s is already registered with %2s phone number"
 msgstr ""
@@ -35,17 +33,12 @@ msgstr ""
 #: admin/class-xoo-ml-users-table.php:59
 #: admin/class-xoo-ml-users-table.php:102
 #: admin/class-xoo-ml-users-table.php:120
-#: admin/includes/class-xoo-ml-users-table.php:56
-#: admin/includes/class-xoo-ml-users-table.php:99
-#: admin/includes/class-xoo-ml-users-table.php:117
-#: includes/class-xoo-ml-frontend.php:161 includes/xoo-ml-functions.php:19
-#: includes/xoo-ml-functions.php:49
+#: includes/class-xoo-ml-frontend.php:161 includes/xoo-ml-functions.php:25
+#: includes/xoo-ml-functions.php:55
 msgid "Phone"
 msgstr ""
 
-#: admin/class-xoo-ml-users-table.php:62
-#: admin/includes/class-xoo-ml-users-table.php:59
-#: templates/xoo-ml-phone-input.php:48
+#: admin/class-xoo-ml-users-table.php:62 templates/xoo-ml-phone-input.php:48
 msgid "Select Country Code"
 msgstr ""
 
@@ -54,7 +47,7 @@ msgid ""
 "[otp] is your One Time Verification(OTP) to confirm your phone no at xootix."
 msgstr ""
 
-#: admin/views/settings/phone.php:350
+#: admin/views/settings/phone.php:366
 msgid "One time password"
 msgstr ""
 
@@ -96,7 +89,7 @@ msgid "Something went wrong. Please try later"
 msgstr ""
 
 #: includes/class-xoo-ml-frontend.php:136
-#: includes/class-xoo-ml-verification.php:346
+#: includes/class-xoo-ml-verification.php:348
 msgid "Please verify your mobile number"
 msgstr ""
 
@@ -104,95 +97,98 @@ msgstr ""
 msgid "Phone or Email address"
 msgstr ""
 
-#: includes/class-xoo-ml-gravity-form.php:31
+#: includes/class-xoo-ml-gravity-form.php:34
+msgid "Form Type"
+msgstr ""
+
+#: includes/class-xoo-ml-gravity-form.php:37
 msgid "Register User"
 msgstr ""
 
-#: includes/class-xoo-ml-gravity-form.php:32
+#: includes/class-xoo-ml-gravity-form.php:38
 msgid "Save as a field entry"
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:146
+#: includes/class-xoo-ml-gravity-form.php:43
+msgid "Enable Country Code"
+msgstr ""
+
+#: includes/class-xoo-ml-otp-handler.php:149
 msgid "Phone Number not found"
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:219
+#: includes/class-xoo-ml-otp-handler.php:212
+msgid "Number of tries exceeded, Please try again in few minutes"
+msgstr ""
+
+#: includes/class-xoo-ml-otp-handler.php:243
 #, php-format
 msgid "OTP Limit reached. Please try again in %s."
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:225
+#: includes/class-xoo-ml-otp-handler.php:267
 #, php-format
 msgid "Please wait %s for a new OTP."
 msgstr ""
 
-#: includes/class-xoo-ml-otp-handler.php:235
-#, php-format
-msgid "Maximum number of tries exceeded. Please try again in %s."
-msgstr ""
-
-#: includes/class-xoo-ml-verification.php:99
+#: includes/class-xoo-ml-verification.php:101
 msgid "Login successful"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:237
+#: includes/class-xoo-ml-verification.php:239
 msgid "OTP Resent"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:268
-#: includes/class-xoo-ml-verification.php:533
+#: includes/class-xoo-ml-verification.php:270
+#: includes/class-xoo-ml-verification.php:546
 msgid "Phone field cannot be empty"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:313
-#: includes/class-xoo-ml-verification.php:319
+#: includes/class-xoo-ml-verification.php:315
+#: includes/class-xoo-ml-verification.php:321
 msgid "Sorry, this phone number is already in use."
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:320
+#: includes/class-xoo-ml-verification.php:322
 msgid "Please login"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:329
+#: includes/class-xoo-ml-verification.php:331
 msgid "We cannot find an account with that mobile number. Please register."
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:371
-#: includes/class-xoo-ml-verification.php:569
+#: includes/class-xoo-ml-verification.php:373
+#: includes/class-xoo-ml-verification.php:582
 #, php-format
 msgid "Please enter the OTP sent to <br> %s"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:421
-msgid "Number of tries exceeded, Please try again in few minutes"
-msgstr ""
-
-#: includes/class-xoo-ml-verification.php:439
-#: includes/class-xoo-ml-verification.php:475
+#: includes/class-xoo-ml-verification.php:445
+#: includes/class-xoo-ml-verification.php:481
 msgid "OTP Expired"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:492
+#: includes/class-xoo-ml-verification.php:503
 msgid "Your number has been successfully updated"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:492
+#: includes/class-xoo-ml-verification.php:503
 msgid "Thank you for verifying your number."
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:509
+#: includes/class-xoo-ml-verification.php:522
 msgid "Invalid OTP"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:537
+#: includes/class-xoo-ml-verification.php:550
 msgid "Country code cannot be empty"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:547
+#: includes/class-xoo-ml-verification.php:560
 msgid "We cannot find an account with that mobile number"
 msgstr ""
 
-#: includes/class-xoo-ml-verification.php:554
+#: includes/class-xoo-ml-verification.php:567
 msgid "Something went wrong. Please contact site administrator."
 msgstr ""
 
@@ -210,16 +206,16 @@ msgid "Submit"
 msgstr ""
 
 #: templates/xoo-ml-otp-login-form.php:22
-#: templates/xoo-ml-otp-login-form.php:36
+#: templates/xoo-ml-otp-login-form.php:40
 msgid "Or"
 msgstr ""
 
 #: templates/xoo-ml-otp-login-form.php:24
-#: templates/xoo-ml-otp-login-form.php:34
+#: templates/xoo-ml-otp-login-form.php:38
 msgid "Login with OTP"
 msgstr ""
 
-#: templates/xoo-ml-otp-login-form.php:38
+#: templates/xoo-ml-otp-login-form.php:42
 msgid "Login with Email & Password"
 msgstr ""
 

@@ -1,5 +1,7 @@
 <?php
 
+use XooML\Framework\Xoo_Exception;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -289,7 +291,7 @@ class Xoo_Ml_Phone_Verification{
 				$phone_otp_data = array();
 			}
 
-			$form_validation = apply_filters( 'xoo_ml_phone_form_validation', new WP_Error(), $form_type, $phone_code, $phone_no, $phone_otp_data );
+			$form_validation = apply_filters( 'xoo_ml_phone_form_validation', new \WP_Error(), $form_type, $phone_code, $phone_no, $phone_otp_data );
 
 			if( $form_validation->get_error_code() ){
 				throw new Xoo_Exception( $form_validation->get_error_message() );	
@@ -393,7 +395,7 @@ class Xoo_Ml_Phone_Verification{
 					exit;
 				}
 
-				wp_die( $notice );
+				wp_die( wp_kses_post( $notice ) );
 			}
 
 			
@@ -412,18 +414,22 @@ class Xoo_Ml_Phone_Verification{
 
 				$notice = false;
 
-				if( !is_array( $phone_otp_data ) ){
-					$phone_otp_data = array();
+				if( !is_array( $phone_otp_data ) || empty( $phone_otp_data ) ){
+					return;
 				}
 
-				//Check for incorrect limit
-				if( isset( $phone_otp_data['incorrect'] ) && $phone_otp_data['incorrect'] > xoo_ml_helper()->get_phone_option('otp-incorrect-limit') ){
-					throw new Xoo_Exception( __( 'Number of tries exceeded, Please try again in few minutes', 'mobile-login-woocommerce' ) );
-				}
+            	$destination 	= $phone_otp_data['sendTo'];
+            	$limit_data 	= Xoo_Ml_Otp_Handler::get_destination_limit_data( $destination );
+
+            	$incorrect_limit_reached = Xoo_Ml_Otp_Handler::incorrect_tries_limit_reached( $destination );
+
+	            //Check for incorrect limit
+	            if( is_wp_error( $incorrect_limit_reached )  ){
+	                throw new Xoo_Exception( $incorrect_limit_reached );
+	            }
 
 				//Handle firebase verification
 				if( xoo_ml_helper()->get_phone_option('m-operator') === 'firebase' ){
-
 
 
 					if( isset( $_POST['firebase_error'] ) ){
@@ -476,13 +482,18 @@ class Xoo_Ml_Phone_Verification{
 					}
 					
 					Xoo_Ml_Otp_Handler::set_otp_data( array(
-						'verified' 			=> true,
 						'form_token' 		=> sanitize_text_field( $_POST['token'] ),
-						'incorrect' 		=> 0,
-						'sent_items' 		=> 0,
 						'expiry' 			=> '',
-						'created' 			=> '', 
+						'verified'          => true,
+						'verified_until'    => time() + 10 * MINUTE_IN_SECONDS,
+		                'expiry'            => '',
 					) );
+
+					Xoo_Ml_Otp_Handler::set_destination_limit_data( $destination, array(
+	                    'incorrect' 		=> 0,
+						'sent_times' 		=> 0,
+						'created' 			=> '', 
+	                ) );
 
 					$parent_form_type = isset( $_POST['parentFormData'] ) && isset( $_POST['parentFormData']['xoo-ml-form-type'] ) ? sanitize_text_field( $_POST['parentFormData']['xoo-ml-form-type'] ) : '';
 
@@ -500,9 +511,11 @@ class Xoo_Ml_Phone_Verification{
 
 				}
 
-				$incorrect = isset( $phone_otp_data['incorrect'] ) ? $phone_otp_data['incorrect'] + 1 : 1;
 
-				Xoo_Ml_Otp_Handler::set_otp_data( 'incorrect', $incorrect );
+				
+                Xoo_Ml_Otp_Handler::set_destination_limit_data( $destination, array(
+                    'incorrect' => isset( $limit_data['incorrect'] ) ? $limit_data['incorrect'] + 1 : 1,
+                ) );
 
 			}
 

@@ -1,7 +1,12 @@
-
 <?php
 
-$imgPath = XOO_ML_URL . '/admin/assets/images/pro/';
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
+$imgPath  = XOO_ML_URL . '/admin/assets/images/pro/';
 
 ?>
 
@@ -9,7 +14,7 @@ $imgPath = XOO_ML_URL . '/admin/assets/images/pro/';
 
 	<div class="xoo-wscp-head">
 		<div>
-			<span><img src="<?php echo $imgPath.'/crown.png' ?>" style="margin-right: 10px">Premium</span>
+			<span><img src="<?php echo esc_url( $imgPath .'/crown.png' ) ?>" style="margin-right: 10px">Premium</span>
 			<span>Make Login experience smooth</span>
 		</div>
 		<div>
@@ -26,19 +31,19 @@ $imgPath = XOO_ML_URL . '/admin/assets/images/pro/';
 
 			<ul>
 
-				<li><img src="<?php echo $imgPath.'/email.png' ?>">Login with Email OTP</li>
+				<li><img src="<?php echo esc_url( $imgPath .'/email.png' ) ?>">Login with Email OTP</li>
 
 				<?php if( class_exists('woocommerce') ): ?>
-					<li><img src="<?php echo $imgPath.'/checkout.png' ?>">Woocommerce checkout form OTP verification </li>
+					<li><img src="<?php echo esc_url( $imgPath .'/checkout.png' ) ?>">Woocommerce checkout form OTP verification </li>
 				<?php endif; ?>
 
-				<li><img src="<?php echo $imgPath.'/2fa.png' ?>">Two Factor Authentication - SMS, Email & Authenticator app</li>
+				<li><img src="<?php echo esc_url( $imgPath .'/2fa.png' ) ?>">Two Factor Authentication - SMS, Email & Authenticator app</li>
 
-				<li><img src="<?php echo $imgPath.'/flags.png' ?>">Country Code Flags</li>
+				<li><img src="<?php echo esc_url( $imgPath .'/flags.png' ) ?>">Country Code Flags</li>
 
-				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>">Auto Read OTP on mobile browser</li>
+				<li><img src="<?php echo esc_url( $imgPath .'/checkmark.png' ) ?>">Auto Read OTP on mobile browser</li>
 
-				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>">Stunning login and register popups with inline forms, fully customizable. Available as a separate plugin <a href="https://wordpress.org/plugins/easy-login-woocommerce/" target="_blank">Download</a></li>
+				<li><img src="<?php echo esc_url( $imgPath .'/checkmark.png' ) ?>">Stunning login and register popups with inline forms, fully customizable. Available as a separate plugin <a href="https://wordpress.org/plugins/easy-login-woocommerce/" target="_blank">Download</a></li>
 
 			</ul>
 

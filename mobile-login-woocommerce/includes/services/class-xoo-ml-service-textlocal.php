@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_TextLocal extends Xoo_Ml_Service{
 
 	public $apikey, $senderid;
@@ -40,5 +46,3 @@ class Xoo_Ml_Service_TextLocal extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_TextLocal();
-
-?>

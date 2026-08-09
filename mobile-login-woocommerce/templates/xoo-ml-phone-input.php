@@ -45,11 +45,11 @@ if( $cc_show === 'yes' && $merge_cc ){
 
 				<select class="xoo-ml-phone-cc <?php echo esc_attr( implode( ' ', $input_class ) ); ?>" name="xoo-ml-reg-phone-cc">
 
-					<option disabled><?php _e( 'Select Country Code', 'mobile-login-woocommerce' ); ?></option>
+					<option disabled><?php esc_html_e( 'Select Country Code', 'mobile-login-woocommerce' ); ?></option>
 
 					<?php foreach( $cc_list as $country_code => $country_phone_code ): ?>
 
-						<option value="<?php echo esc_attr( $country_phone_code ); ?>" <?php echo $country_phone_code === $default_cc ? 'selected' : ''; ?> data-cc="<?php echo $country_code ?>"><?php echo esc_attr( $country_code.' '.$country_phone_code ); ?></option>
+						<option value="<?php echo esc_attr( $country_phone_code ); ?>" <?php echo $country_phone_code === $default_cc ? 'selected' : ''; ?> data-cc="<?php echo esc_attr( $country_code ) ?>"><?php echo esc_attr( $country_code.' '.$country_phone_code ); ?></option>
 
 					<?php endforeach; ?>
 
@@ -71,7 +71,7 @@ if( $cc_show === 'yes' && $merge_cc ){
 			<input type="tel" class="xoo-ml-phone-input <?php echo esc_attr( implode( ' ', $input_class ) ); ?>" name="xoo-ml-reg-phone" autocomplete="tel" value="<?php echo esc_attr( $default_phone ); ?>" <?php echo $show_phone === 'required' ? 'required' : ''; ?>/>
 			
 			<?php if( $form_type !== 'login_with_otp' ): ?>
-				<span class="xoo-ml-reg-phone-change"><?php _e( 'Change?', 'mobile-login-woocommerce' ); ?></span>
+				<span class="xoo-ml-reg-phone-change"><?php esc_html_e( 'Change?', 'mobile-login-woocommerce' ); ?></span>
 			<?php endif; ?>
 
 		</div>

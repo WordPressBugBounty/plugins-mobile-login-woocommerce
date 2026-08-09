@@ -1,5 +1,11 @@
 <?php
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_OurSMS extends Xoo_Ml_Service{
 
 	public $username, $apikey, $senderid;
@@ -42,5 +48,3 @@ class Xoo_Ml_Service_OurSMS extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_OurSMS();
-
-?>

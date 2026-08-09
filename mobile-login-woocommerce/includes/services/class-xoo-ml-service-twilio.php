@@ -2,6 +2,12 @@
 
 use Twilio\Rest\Client;
 
+//Exit if accessed directly
+if(!defined('ABSPATH')){
+	return;
+}
+
+
 class Xoo_Ml_Service_Twilio extends Xoo_Ml_Service{
 
 	public $sid, $token, $senderNumber, $whatsappnumber;
@@ -60,7 +66,7 @@ class Xoo_Ml_Service_Twilio extends Xoo_Ml_Service{
 
 			} catch (Exception $e) {
 			    // output error message if fails
-			    return new WP_Error( 'operator-error', $e->getMessage() );
+			    return new \WP_Error( 'operator-error', $e->getMessage() );
 			}
 
 		}
@@ -96,5 +102,3 @@ class Xoo_Ml_Service_Twilio extends Xoo_Ml_Service{
 }
 
 return new Xoo_Ml_Service_Twilio();
-
-?>

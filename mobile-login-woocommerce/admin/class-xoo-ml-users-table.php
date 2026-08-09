@@ -52,14 +52,14 @@ class Xoo_Ml_Users_Table{
 
 	public function edit_profile_page( $user ){
 		
-		$phoneCodes = xoo_ml_country_codes_list();
+		$phoneCodes = xoo_ml_helper()->get_country_codes_list();
 		?>
 		<table class="form-table">
 			<tr>
-				<th><?php  _e( 'Phone', 'mobile-login-woocommerce' ); ?></th>
+				<th><?php  esc_html_e( 'Phone', 'mobile-login-woocommerce' ); ?></th>
 				<td>
 					<select name="xoo-ml-user-reg-phone-cc">
-						<option disabled><?php _e( 'Select Country Code', 'mobile-login-woocommerce' ); ?></option>
+						<option disabled><?php esc_html_e( 'Select Country Code', 'mobile-login-woocommerce' ); ?></option>
 						<?php foreach( $phoneCodes as $country_code => $country_phone_code ): ?>
 							<option value="<?php echo esc_attr( $country_phone_code ); ?>" <?php echo $country_phone_code === get_user_meta( $user->ID, 'xoo_ml_phone_code',true) ? 'selected' : ''; ?> ><?php echo esc_html( $country_code.' '.$country_phone_code ); ?></option>
 						<?php endforeach; ?>
