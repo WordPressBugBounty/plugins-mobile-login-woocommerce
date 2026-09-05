@@ -105,3 +105,85 @@ function xoo_ml_helper(){
 	) );
 }
 xoo_ml_helper();
+
+
+/**
+ * Normalizes a Firebase configuration to JSON.
+ *
+ * Supports JSON, JavaScript object literals, and Firebase's
+ * generated configuration snippet.
+ *
+ * @param string $config Firebase configuration.
+ * @return string Normalized JSON object, or empty string if invalid.
+ */
+function xoo_ml_normalize_firebase_config( $config ) {
+
+	$config = trim( (string) $config );
+
+	if ( '' === $config ) {
+		return '';
+	}
+
+	// Remove single-line JavaScript comments.
+	$config = preg_replace( '/^\s*\/\/.*$/m', '', $config );
+
+	if ( null === $config ) {
+		return '';
+	}
+
+	// Find the configuration object.
+	$start = strpos( $config, '{' );
+
+	if ( false === $start ) {
+		return '';
+	}
+
+	$config = substr( $config, $start );
+
+	$end = strrpos( $config, '}' );
+
+	if ( false === $end ) {
+		return '';
+	}
+
+	$config = substr( $config, 0, $end + 1 );
+
+	// Try JSON first.
+	$decoded = json_decode( $config, true );
+
+	// If it isn't JSON, convert JavaScript object keys to JSON keys.
+	if ( ! is_array( $decoded ) ) {
+
+		$config = preg_replace(
+			'/([{,]\s*)([A-Za-z_$][A-Za-z0-9_$]*)(\s*:)/',
+			'$1"$2"$3',
+			$config
+		);
+
+		if ( null === $config ) {
+			return '';
+		}
+
+		$decoded = json_decode( $config, true );
+	}
+
+	if ( ! is_array( $decoded ) ) {
+		return '';
+	}
+
+	$encoded = wp_json_encode( $decoded );
+
+	return false === $encoded ? '' : $encoded;
+}
+
+
+/**
+ * Sanitizes the Firebase configuration when saving the setting.
+ *
+ * @param string $config Firebase configuration supplied by the user.
+ * @return string Normalized JSON object, or empty string if invalid.
+ */
+function xoo_ml_sanitize_firebase_config( $config ) {
+
+	return xoo_ml_normalize_firebase_config( $config );
+}

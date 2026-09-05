@@ -112,6 +112,7 @@ jQuery(document).ready(function($){
 			'waba_id': waba_id,
 			'phone_no': phone_no,
 			'token': token,
+			'xoo_ml_admin_nonce': xoo_ml_admin_localize.nonce,
 			'action': 'xoo_ml_admin_whatsapp_fetch',
 		}
 
@@ -171,6 +172,7 @@ jQuery(document).ready(function($){
 			'phone_id': phone_id,
 			'token': token,
 			'pin': pin,
+			'xoo_ml_admin_nonce': xoo_ml_admin_localize.nonce,
 			'action': 'xoo_ml_admin_whatsapp_register',
 		}
 

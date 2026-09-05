@@ -234,16 +234,31 @@ class Xoo_Admin{
 
 		if( !current_user_can( $this->capability ) ) return;
 		
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-		$settings  = $_POST['import'];
-	
-		$options = json_decode( html_entity_decode( stripslashes ($settings ) ), true );
-
-		foreach ( $options as $key => $value ) {
-			update_option( $key, $value );
+		if ( ! isset( $_POST['import'] ) || ! is_string( $_POST['import'] ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid settings import.' ), 400 );
 		}
-			
-		die();
+
+		$options = json_decode( wp_unslash( $_POST['import'] ), true );
+
+		if ( ! is_array( $options ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid settings import.' ), 400 );
+		}
+
+		// Only registered plugin settings may be imported. Reuse the regular
+		// save path so each field receives its normal sanitization.
+		foreach ( $this->settings as $tab_id => $sections_settings ) {
+			if ( ! isset( $this->tabs[ $tab_id ]['option_key'] ) ) {
+				continue;
+			}
+
+			$option_key = $this->tabs[ $tab_id ]['option_key'];
+
+			if ( isset( $options[ $option_key ] ) && is_array( $options[ $option_key ] ) ) {
+				$this->save_option( $option_key, $sections_settings, $options[ $option_key ] );
+			}
+		}
+
+		wp_send_json_success();
 
 	}
 

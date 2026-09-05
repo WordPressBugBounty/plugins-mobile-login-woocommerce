@@ -32,6 +32,9 @@ $settings = array(
 		'option_name' 	=> $option_name,
 		'id' 			=> 'fb-config',
 		'title' 		=> 'Config',
+		'args' 			=> array(
+			'sanitize' => 'xoo_ml_sanitize_firebase_config',
+		),
 	),
 
 

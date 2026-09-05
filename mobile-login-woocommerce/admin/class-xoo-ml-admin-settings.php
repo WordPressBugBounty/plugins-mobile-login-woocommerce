@@ -82,13 +82,17 @@ class Xoo_Ml_Admin_Settings{
 	}
 
 	public function whatsapp_register(){
+		$this->verify_whatsapp_ajax_request();
 
 		try {
 
-			$token 		= sanitize_text_field( $_POST['token'] );
-			$waba_id 	= sanitize_text_field( $_POST['waba_id'] );
-			$phone_id 	= sanitize_text_field( trim( $_POST['phone_id'] ) );
-			$pin 		= sanitize_text_field( trim( $_POST['pin'] ) );
+			$token 		= isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
+			$phone_id 	= isset( $_POST['phone_id'] ) ? sanitize_text_field( wp_unslash( $_POST['phone_id'] ) ) : '';
+			$pin 		= isset( $_POST['pin'] ) ? sanitize_text_field( wp_unslash( $_POST['pin'] ) ) : '';
+
+			if ( ! $token || ! $phone_id || ! $pin ) {
+				throw new Exception( 'Required WhatsApp settings are missing.' );
+			}
 
 			$register_url = "https://graph.facebook.com/v24.0/{$phone_id}/register";
 
@@ -126,12 +130,17 @@ class Xoo_Ml_Admin_Settings{
 
 
 	public function whatsapp_fetch(){
+		$this->verify_whatsapp_ajax_request();
 
 		try {
 
-			$token 		= sanitize_text_field( $_POST['token'] );
-			$waba_id 	= sanitize_text_field( $_POST['waba_id'] );
-			$phone_no 	= sanitize_text_field( trim( $_POST['phone_no'] ) );
+			$token 		= isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
+			$waba_id 	= isset( $_POST['waba_id'] ) ? sanitize_text_field( wp_unslash( $_POST['waba_id'] ) ) : '';
+			$phone_no 	= isset( $_POST['phone_no'] ) ? sanitize_text_field( wp_unslash( $_POST['phone_no'] ) ) : '';
+
+			if ( ! $token || ! $waba_id || ! $phone_no ) {
+				throw new Exception( 'Required WhatsApp settings are missing.' );
+			}
 
 			$fetch_numbers_url = "https://graph.facebook.com/v24.0/{$waba_id}/phone_numbers";
 
@@ -189,6 +198,19 @@ class Xoo_Ml_Admin_Settings{
 		
 		exit;
 
+	}
+
+	/**
+	 * Restrict WhatsApp setup requests to authorized settings-page users.
+	 *
+	 * @return void
+	 */
+	private function verify_whatsapp_ajax_request(){
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => 'Unauthorized request.' ), 403 );
+		}
+
+		check_ajax_referer( 'xoo-ml-admin-nonce', 'xoo_ml_admin_nonce' );
 	}
 
 
@@ -310,7 +332,8 @@ class Xoo_Ml_Admin_Settings{
 
 		wp_localize_script('xoo-ml-admin-js','xoo_ml_admin_localize',array(
 			'adminurl'  => admin_url().'admin-ajax.php',
-			'isSDKVer' 	=> xoo_ml()->isSDKVersion
+			'isSDKVer' 	=> xoo_ml()->isSDKVersion,
+			'nonce' 	=> wp_create_nonce( 'xoo-ml-admin-nonce' ),
 		));
 
 	}

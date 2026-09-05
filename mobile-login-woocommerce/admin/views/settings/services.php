@@ -123,7 +123,8 @@ $settings = array(
 		'title' 		=> 'Config',
 		'args' 			=> array(
 			'rows' 	=> 9,
-			'cols' 	=> 60
+			'cols' 	=> 60,
+			'sanitize' => 'xoo_ml_sanitize_firebase_config',
 		)
 	),
 

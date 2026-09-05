@@ -149,8 +149,24 @@ class Xoo_Ml_Phone_Frontend{
 		));
 
 
-		if( $settings['m-operator'] === 'firebase' && xoo_ml_helper()->get_service_option('fb-config') ){
-			wp_add_inline_script('xoo-ml-phone-js', 'xoo_ml_phone_localize.firebase.config = '. htmlspecialchars_decode( xoo_ml_helper()->get_service_option('fb-config') ) );
+		if ( 'firebase' === $settings['m-operator'] ) {
+
+			$config = xoo_ml_normalize_firebase_config( xoo_ml_helper()->get_service_option( 'fb-config' ) );
+
+			$config = json_decode( $config, true );
+
+			if ( is_array( $config ) ) {
+
+				wp_add_inline_script(
+					'xoo-ml-phone-js',
+					'xoo_ml_phone_localize.firebase.config = ' .
+					wp_json_encode(
+						$config,
+						JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+					) .
+					';'
+				);
+			}
 		}
 
 	}
